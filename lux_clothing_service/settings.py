@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "lux_clothing",
     "user",
+    "colorfield",
 ]
 
 MIDDLEWARE = [
