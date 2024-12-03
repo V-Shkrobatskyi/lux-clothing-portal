@@ -19,7 +19,7 @@ class Address(models.Model):
     region = models.CharField(max_length=255)
     city = models.CharField(max_length=63)
     street = models.CharField(max_length=255)
-    zip_code = models.IntegerField()
+    zip_code = models.PositiveIntegerField()
 
 
 class Profile(models.Model):
@@ -28,15 +28,11 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         related_name="profile",
     )
-    phone_number = models.IntegerField(max_length=12, null=True, blank=True)
+    phone_number = models.PositiveIntegerField()
     address = models.ForeignKey(
         Address, on_delete=models.CASCADE, related_name="profile"
     )
-    default_address = models.OneToOneField(
-        Address,
-        on_delete=models.CASCADE,
-        related_name="profile",
-    )
+    default_address = models.PositiveIntegerField()  # one of profile Address id
 
     @property
     def full_name(self) -> str:
@@ -103,7 +99,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="order_item"
     )
-    quantity = models.IntegerField(max_length=12)
+    quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
 
@@ -125,7 +121,7 @@ class Order(models.Model):
     order_items = models.ForeignKey(
         OrderItem, on_delete=models.CASCADE, related_name="order"
     )
-    order_phone_number = models.IntegerField(max_length=12, null=True, blank=True)
+    order_phone_number = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=15, choices=StatusChoices.choices)
 
