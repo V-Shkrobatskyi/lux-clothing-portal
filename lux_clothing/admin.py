@@ -6,7 +6,7 @@ from .models import (
     Order,
     OrderItem,
     Product,
-    ProductVariant,
+    ProductHead,
     Category,
     Brand,
     Color,
@@ -19,7 +19,7 @@ admin.site.register(Profile)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Product)
-admin.site.register(ProductVariant)
+admin.site.register(ProductHead)
 admin.site.register(Category)
 admin.site.register(Brand)
 admin.site.register(Color)
