@@ -160,7 +160,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="order")
     order_address = models.ForeignKey(
-        Address, on_delete=models.CASCADE, related_name="profile"
+        Address, on_delete=models.DO_NOTHING, related_name="order"
     )
     order_items = models.ManyToManyField(
         OrderItem, related_name="order", symmetrical=False
