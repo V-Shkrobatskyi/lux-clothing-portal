@@ -49,10 +49,28 @@ class Category(models.Model):
 class Brand(models.Model):
     name = models.CharField(max_length=63, unique=True)
 
+class ProductHead(models.Model):
+    title = models.CharField(max_length=63, unique=True)
+    description = models.CharField(max_length=255)
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="product_head"
+    )
+    brand = models.ForeignKey(
+        Brand, on_delete=models.CASCADE, related_name="product_head"
+    )
+    details = models.TextField()
+
+
+class ProductPhoto(models.Model):
+    image = models.ImageField(null=True, upload_to=image_file_path, blank=True)
+
 
 class Color(models.Model):
     name = models.CharField(max_length=63, unique=True)
     color_hex = ColorField(default="#FF0000")
+    photos = models.ManyToManyField(
+        ProductPhoto, related_name="color", symmetrical=False
+    )
 
 
 class Size(models.Model):
@@ -62,21 +80,17 @@ class Size(models.Model):
 class ProductPhoto(models.Model):
     image = models.ImageField(null=True, upload_to=image_file_path, blank=True)
 
-
-class ProductVariant(models.Model):
-    color = models.ForeignKey(
-        Color, on_delete=models.CASCADE, related_name="product_variant"
-    )
-    size = models.ForeignKey(
-        Size, on_delete=models.CASCADE, related_name="product_variant"
-    )
-    photos = models.ManyToManyField(
-        ProductPhoto, blank=True, related_name="product_variant"
-    )
+class Product(models.Model):
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="product")
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="product")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True
     )
+    product_head = models.ForeignKey(
+        ProductHead, on_delete=models.CASCADE, related_name="product"
+    )
+    inventory = models.PositiveIntegerField(default=0)
 
 
 class Product(models.Model):
@@ -118,12 +132,14 @@ class Order(models.Model):
     order_address = models.ForeignKey(
         Address, on_delete=models.CASCADE, related_name="profile"
     )
-    order_items = models.ForeignKey(
-        OrderItem, on_delete=models.CASCADE, related_name="order"
+    order_items = models.ManyToManyField(
+        OrderItem, related_name="order", symmetrical=False
     )
     order_phone_number = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=15, choices=StatusChoices.choices)
+    status = models.CharField(
+        max_length=15, choices=StatusChoices.choices, default=StatusChoices.CART
+    )
 
     class Meta:
         ordering = ["-created"]
