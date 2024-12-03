@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "lux_clothing",
     "user",
     "colorfield",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
