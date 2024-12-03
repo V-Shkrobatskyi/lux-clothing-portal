@@ -1,7 +1,6 @@
 import os
 import uuid
 
-from django.utils.text import slugify
 from colorfield.fields import ColorField
 from django.conf import settings
 from django.db import models
@@ -92,8 +91,6 @@ class Size(models.Model):
     def __str__(self):
         return self.name
 
-class ProductPhoto(models.Model):
-    image = models.ImageField(null=True, upload_to=image_file_path, blank=True)
 
 class Product(models.Model):
     color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="product")
@@ -110,17 +107,30 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.product_head}, {self.color}, {self.size}, {self.price}, {self.discount}"
 
-class Product(models.Model):
-    title = models.CharField(max_length=63, unique=True)
-    description = models.CharField(max_length=255)
-    category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name="product"
-    )
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="product")
-    details = models.TextField()
-    variant = models.ForeignKey(
-        ProductVariant, on_delete=models.CASCADE, related_name="product"
-    )
+    @staticmethod
+    def validate_new_product(instance, error_to_raise) -> None:
+        if (
+            Product.objects.filter(
+                product_head=instance.product_head,
+                size=instance.size,
+                color=instance.color,
+            ).count()
+            != 0
+        ):
+            raise error_to_raise(
+                {
+                    "info": f"You can't add new product, it already exist with parameters: "
+                    f"product_head = '{instance.product_head.title}', size = '{instance.size}' "
+                    f"and color = '{instance.color}'."
+                }
+            )
+
+    def clean(self) -> None:
+        Product.validate_new_product(self, ValueError)
+
+    def save(self, *args, **kwargs) -> None:
+        self.clean()
+        return super().save(*args, **kwargs)
 
 
 class OrderItem(models.Model):
