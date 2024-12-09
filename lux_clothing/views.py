@@ -17,6 +17,7 @@ from lux_clothing.permissions import IsOwnerOrIsAdmin
 from lux_clothing.serializers import (
     ProfileSerializer,
     ProfileListSerializer,
+    AddressSerializer,
 )
 
 
@@ -54,3 +55,20 @@ class ProfileViewSet(viewsets.ModelViewSet):
         user.last_name = self.request.data.get("user.last_name")
         user.save()
         serializer.save(user=user)
+
+
+class AddressViewSet(viewsets.ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(profile__user=self.request.user)
+
+        return queryset.distinct()
+
+    def perform_create(self, serializer):
+        profile = Profile.objects.get(user=self.request.user)
+        serializer.save(profile=[profile])
