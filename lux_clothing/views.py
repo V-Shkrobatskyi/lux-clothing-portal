@@ -19,6 +19,9 @@ from lux_clothing.serializers import (
     ProfileSerializer,
     ProfileListSerializer,
     AddressSerializer,
+    CategorySerializer,
+    BrandSerializer,
+    SizeSerializer,
 )
 
 
@@ -80,3 +83,21 @@ class AddressViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
         serializer.save(profile=[profile])
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class BrandViewSet(viewsets.ModelViewSet):
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class SizeViewSet(viewsets.ModelViewSet):
+    queryset = Size.objects.all()
+    serializer_class = SizeSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
