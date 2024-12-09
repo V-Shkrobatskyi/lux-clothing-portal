@@ -17,8 +17,32 @@ from lux_clothing.models import (
 from user.serializers import UserUpdateProfileSerializer
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = (
+            "id",
+            "profile",
+            "country",
+            "region",
+            "city",
+            "street",
+            "zip_code",
+        )
+        read_only_fields = (
+            "id",
+            "profile",
+        )
+
+    def update(self, instance, validated_data):
+        instance.save()
+
+        return instance
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserUpdateProfileSerializer(many=False, partial=True)
+    addresses = AddressSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile
@@ -26,10 +50,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "phone_number",
-            "address",
+            "addresses",
             "default_address",
         ]
-        read_only_fields = ("id", "user")
+        read_only_fields = ("id", "user", "addresses")
 
     def validate(self, attrs):
         data = super(ProfileSerializer, self).validate(attrs=attrs)
@@ -42,7 +66,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        fields_to_update = ["phone_number", "address", "default_address"]
+        fields_to_update = ["phone_number", "default_address"]
 
         for field in fields_to_update:
             value = validated_data.get(field, getattr(instance, field))
@@ -68,6 +92,6 @@ class ProfileListSerializer(serializers.ModelSerializer):
             "user",
             "full_name",
             "phone_number",
-            "address",
+            "addresses",
             "default_address",
         )
