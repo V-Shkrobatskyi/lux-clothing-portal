@@ -28,8 +28,8 @@ class Profile(models.Model):
         related_name="profile",
     )
     phone_number = models.PositiveIntegerField()
-    address = models.ForeignKey(
-        Address, on_delete=models.CASCADE, related_name="profile"
+    addresses = models.ManyToManyField(
+        Address, related_name="profile", symmetrical=False
     )
     default_address = models.PositiveIntegerField()  # one of profile Address id
 
