@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from lux_clothing.models import (
     Profile,
@@ -13,7 +14,7 @@ from lux_clothing.models import (
     OrderItem,
     Order,
 )
-from lux_clothing.permissions import IsOwnerOrIsAdmin
+from lux_clothing.permissions import IsOwnerOrIsAdmin, IsAdminALLOrReadOnly
 from lux_clothing.serializers import (
     ProfileSerializer,
     ProfileListSerializer,
@@ -24,7 +25,10 @@ from lux_clothing.serializers import (
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all().select_related("user")
     serializer_class = ProfileSerializer
-    permission_classes = (IsOwnerOrIsAdmin,)
+    permission_classes = (
+        IsAuthenticated,
+        IsOwnerOrIsAdmin,
+    )
 
     def get_queryset(self):
         first_name = self.request.query_params.get("first_name")
@@ -60,6 +64,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+    permission_classes = (
+        IsAuthenticated,
+        IsOwnerOrIsAdmin,
+    )
 
     def get_queryset(self):
         queryset = self.queryset
