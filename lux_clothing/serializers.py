@@ -109,3 +109,30 @@ class ProfileListSerializer(serializers.ModelSerializer):
             "addresses",
             "default_address",
         )
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            "id",
+            "name",
+        )
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = (
+            "id",
+            "name",
+        )
+
+
+class SizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Size
+        fields = (
+            "id",
+            "name",
+        )
