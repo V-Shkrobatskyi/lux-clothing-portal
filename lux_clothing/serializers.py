@@ -63,6 +63,20 @@ class ProfileSerializer(serializers.ModelSerializer):
         if profile_exist and self.instance != profile_exist:
             raise ValidationError({"error": "You already have your own profile."})
 
+        new_default_address = attrs["default_address"]
+        addresses_check_list = [
+            i[0]
+            for i in list(
+                Address.objects.filter(profile=self.instance).values_list("id")
+            )
+        ]
+        if new_default_address not in addresses_check_list:
+            raise ValidationError(
+                {
+                    "error": f"Address id {new_default_address} is not in your addresses list: {addresses_check_list}."
+                }
+            )
+
         return data
 
     def update(self, instance, validated_data):
