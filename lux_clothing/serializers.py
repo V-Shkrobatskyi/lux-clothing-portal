@@ -150,3 +150,13 @@ class ProductHeadSerializer(serializers.ModelSerializer):
             "details",
         )
 
+
+class ProductPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductPhoto
+        fields = (
+            "id",
+            "image",
+            "order",
+            "main",
+        )

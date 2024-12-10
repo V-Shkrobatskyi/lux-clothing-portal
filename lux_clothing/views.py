@@ -110,3 +110,9 @@ class ProductHeadViewSet(viewsets.ModelViewSet):
     queryset = ProductHead.objects.all()
     serializer_class = ProductHeadSerializer
     permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class ProductPhotoViewSet(viewsets.ModelViewSet):
+    queryset = ProductPhoto.objects.all()
+    serializer_class = ProductPhotoSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
