@@ -116,3 +116,9 @@ class ProductPhotoViewSet(viewsets.ModelViewSet):
     queryset = ProductPhoto.objects.all()
     serializer_class = ProductPhotoSerializer
     permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class ColorViewSet(viewsets.ModelViewSet):
+    queryset = Color.objects.all()
+    serializer_class = ColorSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)

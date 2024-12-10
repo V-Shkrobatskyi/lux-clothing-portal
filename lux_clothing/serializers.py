@@ -160,3 +160,9 @@ class ProductPhotoSerializer(serializers.ModelSerializer):
             "order",
             "main",
         )
+
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Color
+        fields = ("id", "name", "color_hex", "photos")
