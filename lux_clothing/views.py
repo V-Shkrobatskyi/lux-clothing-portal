@@ -25,6 +25,7 @@ from lux_clothing.serializers import (
     ProductHeadSerializer,
     ColorSerializer,
     ProductPhotoSerializer,
+    ProductSerializer,
 )
 
 
@@ -121,4 +122,10 @@ class ProductPhotoViewSet(viewsets.ModelViewSet):
 class ColorViewSet(viewsets.ModelViewSet):
     queryset = Color.objects.all()
     serializer_class = ColorSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
     permission_classes = (IsAdminALLOrReadOnly,)

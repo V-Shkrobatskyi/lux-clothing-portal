@@ -166,3 +166,17 @@ class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
         fields = ("id", "name", "color_hex", "photos")
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            "id",
+            "color",
+            "size",
+            "price",
+            "discount",
+            "product_head",
+            "inventory",
+        )
