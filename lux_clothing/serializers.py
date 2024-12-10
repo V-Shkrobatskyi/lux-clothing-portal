@@ -136,3 +136,17 @@ class SizeSerializer(serializers.ModelSerializer):
             "id",
             "name",
         )
+
+
+class ProductHeadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductHead
+        fields = (
+            "id",
+            "title",
+            "description",
+            "category",
+            "brand",
+            "details",
+        )
+
