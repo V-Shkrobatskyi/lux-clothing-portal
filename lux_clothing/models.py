@@ -72,6 +72,8 @@ class ProductHead(models.Model):
 
 class ProductPhoto(models.Model):
     image = models.ImageField(null=True, upload_to=image_file_path, blank=True)
+    order = models.PositiveIntegerField(default=0)
+    main = models.BooleanField(default=False)
 
 
 class Color(models.Model):
