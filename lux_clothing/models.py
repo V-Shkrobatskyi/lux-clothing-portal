@@ -148,6 +148,19 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"product: '{self.product}', quantity: {self.quantity}, total price: {self.quantity * self.product.price}"
 
+    @staticmethod
+    def update_actual_price(instance) -> None:
+        updated_total_price = instance.product.price * instance.quantity
+        if updated_total_price != instance.price:
+            instance.price = updated_total_price
+
+    def clean(self) -> None:
+        OrderItem.update_actual_price(self)
+
+    def save(self, *args, **kwargs) -> None:
+        self.clean()
+        return super().save(*args, **kwargs)
+
 
 class Order(models.Model):
     class StatusChoices(models.TextChoices):
