@@ -136,8 +136,8 @@ class Product(models.Model):
 
 
 class OrderItem(models.Model):
-    profile = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name="order_item"
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_item"
     )
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="order_item"
@@ -160,7 +160,9 @@ class Order(models.Model):
         COMPLETED = "Completed"
 
     created = models.DateTimeField(auto_now_add=True)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="order")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order"
+    )
     order_address = models.ForeignKey(
         Address, on_delete=models.DO_NOTHING, related_name="order"
     )
