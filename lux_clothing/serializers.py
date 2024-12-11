@@ -180,3 +180,49 @@ class ProductSerializer(serializers.ModelSerializer):
             "product_head",
             "inventory",
         )
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.email", read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = (
+            "id",
+            "user",
+            "product",
+            "quantity",
+            "price",
+        )
+        read_only_fields = ("id", "user", "price")
+
+    def validate(self, attrs):
+        data = super(OrderItemSerializer, self).validate(attrs=attrs)
+
+        return data
+
+    def update(self, instance, validated_data):
+        fields_to_update = ["product", "quantity", "price"]
+
+        for field in fields_to_update:
+            value = validated_data.get(field, getattr(instance, field))
+            setattr(instance, field, value)
+
+        instance.save()
+
+        return instance
+
+
+class OrderItemListSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.email", read_only=True)
+    product = serializers.CharField(source="product.__str__", read_only=False)
+
+    class Meta:
+        model = OrderItem
+        fields = (
+            "id",
+            "user",
+            "product",
+            "quantity",
+            "price",
+        )
