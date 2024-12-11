@@ -26,6 +26,8 @@ from lux_clothing.serializers import (
     ColorSerializer,
     ProductPhotoSerializer,
     ProductSerializer,
+    OrderItemSerializer,
+    OrderItemListSerializer,
 )
 
 
@@ -129,3 +131,29 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+    permission_classes = (
+        IsAuthenticated,
+        IsOwnerOrIsAdmin,
+    )
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(user=self.request.user)
+
+        return queryset.distinct()
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderItemListSerializer
+        return OrderItemSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
