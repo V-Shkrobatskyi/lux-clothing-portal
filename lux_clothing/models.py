@@ -1,5 +1,6 @@
 import os
 import uuid
+from decimal import Decimal
 
 from colorfield.fields import ColorField
 from django.conf import settings
@@ -140,6 +141,26 @@ class Product(models.Model):
                 }
             )
 
+    @staticmethod
+    def validate_inventory(inventory, quantity, error_to_raise) -> None:
+        if inventory == 0:
+            raise error_to_raise(
+                {"product": "You can't buy this product, its inventory is zero."}
+            )
+
+        if inventory < quantity:
+            raise error_to_raise(
+                {
+                    "product": f"You can't buying this product in quantity '{quantity}', "
+                    f"its inventory will run out of zero. Inventory is '{inventory}'."
+                }
+            )
+
+    @staticmethod
+    def sale(instance, quantity) -> None:
+        instance.inventory -= quantity
+        instance.save()
+
     def clean(self) -> None:
         Product.validate_new_product(self, ValueError)
 
@@ -161,16 +182,25 @@ class OrderItem(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"product: '{self.product}', quantity: {self.quantity}, total price: {self.quantity * self.product.price}"
+        return (
+            f"id: '{self.id}', product: '{self.product}', quantity: {self.quantity}, "
+            f"price: {self.product.price}"
+        )
 
     @staticmethod
-    def update_actual_price(instance) -> None:
-        updated_total_price = instance.product.price * instance.quantity
-        if updated_total_price != instance.price:
-            instance.price = updated_total_price
+    def update_price(instance) -> None:
+        instance.price = Decimal(
+            instance.product.price
+            - instance.product.price * Decimal(instance.product.discount / 100)
+        )
+
+    @staticmethod
+    def deactivate(instance) -> None:
+        instance.active = False
+        instance.save()
 
     def clean(self) -> None:
-        OrderItem.update_actual_price(self)
+        OrderItem.update_price(self)
 
     def save(self, *args, **kwargs) -> None:
         self.clean()
@@ -191,7 +221,7 @@ class Order(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order"
+        settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="order"
     )
     order_address = models.ForeignKey(
         Address, on_delete=models.DO_NOTHING, related_name="order"
@@ -209,4 +239,4 @@ class Order(models.Model):
         ordering = ["-created"]
 
     def __str__(self):
-        return f"{self.created.__format__('%Y-%m-%d %H:%M:%S')}, {self.profile}, {self.status}, {self.price}"
+        return f"{self.created.__format__('%Y-%m-%d %H:%M:%S')}, {self.user}, {self.status}, {self.price}"

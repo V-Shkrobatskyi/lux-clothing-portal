@@ -28,13 +28,41 @@ class AddressSerializer(serializers.ModelSerializer):
             "city",
             "street",
             "zip_code",
+            "default",
         )
         read_only_fields = (
             "id",
             "profile",
         )
 
+    def validate(self, attrs):
+        data = super(AddressSerializer, self).validate(attrs=attrs)
+        user = self.context["request"].user
+        default_address_exist = Address.objects.filter(
+            profile=user.profile,
+            default=True,
+        ).first()
+
+        if attrs["default"] and default_address_exist:
+            default_address_exist.default = False
+            default_address_exist.save()
+
+        return data
+
     def update(self, instance, validated_data):
+        fields_to_update = [
+            "country",
+            "region",
+            "city",
+            "street",
+            "zip_code",
+            "default",
+        ]
+
+        for field in fields_to_update:
+            value = validated_data.get(field, getattr(instance, field))
+            setattr(instance, field, value)
+
         instance.save()
 
         return instance
