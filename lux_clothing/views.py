@@ -1,4 +1,3 @@
-from rest_framework import viewsets
 from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -79,7 +78,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 class AddressViewSet(viewsets.ModelViewSet):
-    queryset = Address.objects.all()
+    queryset = Address.objects.filter(inactive=False)
     serializer_class = AddressSerializer
     permission_classes = (
         IsAuthenticated,
@@ -107,6 +106,10 @@ class AddressViewSet(viewsets.ModelViewSet):
                 {"detail": "You can only delete addresses without 'default' option."}
             )
 
+        if used_address:
+            instance.inactive = True
+            instance.save()
+        else:
             self.perform_destroy(instance)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
