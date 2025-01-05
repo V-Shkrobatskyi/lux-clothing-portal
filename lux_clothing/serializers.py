@@ -51,9 +51,12 @@ class ProfileSerializer(serializers.ModelSerializer):
             "user",
             "phone_number",
             "addresses",
-            "default_address",
         ]
-        read_only_fields = ("id", "user", "addresses")
+        read_only_fields = (
+            "id",
+            "user",
+            "addresses",
+        )
 
     def validate(self, attrs):
         data = super(ProfileSerializer, self).validate(attrs=attrs)
@@ -63,24 +66,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         if profile_exist and self.instance != profile_exist:
             raise ValidationError({"error": "You already have your own profile."})
 
-        new_default_address = attrs["default_address"]
-        addresses_check_list = [
-            i[0]
-            for i in list(
-                Address.objects.filter(profile=self.instance).values_list("id")
-            )
-        ]
-        if new_default_address not in addresses_check_list:
-            raise ValidationError(
-                {
-                    "error": f"Address id {new_default_address} is not in your addresses list: {addresses_check_list}."
-                }
-            )
-
         return data
 
     def update(self, instance, validated_data):
-        fields_to_update = ["phone_number", "default_address"]
+        fields_to_update = [
+            "phone_number",
+        ]
 
         for field in fields_to_update:
             value = validated_data.get(field, getattr(instance, field))
@@ -107,7 +98,6 @@ class ProfileListSerializer(serializers.ModelSerializer):
             "full_name",
             "phone_number",
             "addresses",
-            "default_address",
         )
 
 

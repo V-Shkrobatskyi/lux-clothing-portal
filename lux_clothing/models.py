@@ -20,6 +20,10 @@ class Address(models.Model):
     city = models.CharField(max_length=63)
     street = models.CharField(max_length=255)
     zip_code = models.PositiveIntegerField()
+    default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.zip_code}, {self.country}, {self.region}, {self.city}, {self.street}"
 
 
 class Profile(models.Model):

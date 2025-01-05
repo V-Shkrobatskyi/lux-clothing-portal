@@ -17,7 +17,12 @@ from lux_clothing.models import (
     OrderItem,
     Order,
 )
-from lux_clothing.permissions import IsOwnerOrIsAdmin, IsAdminALLOrReadOnly
+from lux_clothing.permissions import (
+    IsOwnerOrIsAdmin,
+    IsAdminALLOrReadOnly,
+    IsAdminALLOrIsOnlyPostOwner,
+    IsAddressOwnerOrIsAdmin,
+)
 from lux_clothing.serializers import (
     ProfileSerializer,
     ProfileListSerializer,
@@ -78,7 +83,7 @@ class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
     permission_classes = (
         IsAuthenticated,
-        IsOwnerOrIsAdmin,
+        IsAddressOwnerOrIsAdmin,
     )
 
     def get_queryset(self):
@@ -92,6 +97,19 @@ class AddressViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
         serializer.save(profile=[profile])
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        used_address = Order.objects.filter(order_address=instance)
+
+        if instance.default:
+            raise ValidationError(
+                {"detail": "You can only delete addresses without 'default' option."}
+            )
+
+            self.perform_destroy(instance)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
