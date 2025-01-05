@@ -11,6 +11,7 @@ from lux_clothing.views import (
     ProductPhotoViewSet,
     ProductViewSet,
     OrderItemViewSet,
+    OrderViewSet,
 )
 
 app_name = "lux_clothing"
@@ -26,6 +27,6 @@ router.register("products_photo", ProductPhotoViewSet)
 router.register("colors", ColorViewSet)
 router.register("products", ProductViewSet)
 router.register("order_items", OrderItemViewSet)
-
+router.register("orders", OrderViewSet)
 
 urlpatterns = router.urls

@@ -35,6 +35,8 @@ from lux_clothing.serializers import (
     ProductSerializer,
     OrderItemSerializer,
     OrderItemListSerializer,
+    OrderSerializer,
+    OrderListSerializer,
 )
 
 
@@ -195,3 +197,31 @@ class OrderItemViewSet(viewsets.ModelViewSet):
             {"detail": "Item deactivated successfully."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = (IsAdminALLOrIsOnlyPostOwner,)
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(user=self.request.user)
+
+        return queryset.distinct()
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context

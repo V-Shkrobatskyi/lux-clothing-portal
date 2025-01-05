@@ -1,3 +1,4 @@
+from django.db.transaction import atomic
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -183,7 +184,12 @@ class ProductPhotoSerializer(serializers.ModelSerializer):
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = ("id", "name", "color_hex", "photos")
+        fields = (
+            "id",
+            "name",
+            "color_hex",
+            "photos",
+        )
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -248,3 +254,126 @@ class OrderItemListSerializer(serializers.ModelSerializer):
             "quantity",
             "price",
         )
+
+
+class OrderItemLimitedSerializer(serializers.ModelSerializer):
+    product = serializers.CharField(source="product.__str__", read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = (
+            "product",
+            "quantity",
+            "price",
+        )
+        read_only_fields = ("__all__",)
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.email", read_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        user = self.context["request"].user
+        active_order_items = OrderItem.objects.filter(user=user, active=True)
+
+        self.fields["order_items"] = serializers.PrimaryKeyRelatedField(
+            queryset=active_order_items,
+            many=True,
+        )
+        self.fields["order_address"].queryset = Address.objects.filter(
+            profile=user.profile, inactive=False
+        ).order_by("-default")
+
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "created",
+            "user",
+            "order_address",
+            "order_items",
+            "order_phone_number",
+            "price",
+            "status",
+        )
+        read_only_fields = (
+            "id",
+            "created",
+            "user",
+            "order_items",
+            "order_phone_number",
+            "price",
+            "status",
+        )
+
+    def validate(self, attrs):
+        data = super(OrderSerializer, self).validate(attrs=attrs)
+
+        user = self.context["request"].user
+        attrs["order_phone_number"] = user.profile.phone_number
+
+        price = 0
+        order_items = attrs["order_items"]
+
+        if not order_items:
+            raise ValidationError(
+                {"error": "Choose order items. Can't create order without products."}
+            )
+
+        for order_item in order_items:
+            OrderItem.update_price(OrderItem.objects.get(id=order_item.id))
+            price += order_item.price * order_item.quantity
+
+            Product.validate_inventory(
+                order_item.product.inventory,
+                order_item.quantity,
+                serializers.ValidationError,
+            )
+
+        attrs["price"] = price
+
+        attrs["status"] = Order.StatusChoices.PENDING
+
+        return data
+
+    @atomic
+    def create(self, validated_data):
+        order_items = validated_data.pop("order_items")
+
+        order = Order.objects.create(**validated_data)
+
+        order_items_id = []
+        for order_item in order_items:
+            Product.sale(order_item.product, order_item.quantity)
+
+            OrderItem.deactivate(order_item)
+
+            order_items_id.append(order_item.id)
+
+        order.order_items.set(order_items_id)
+
+        return order
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.email", read_only=True)
+    order_items = OrderItemLimitedSerializer(many=True, read_only=True)
+    order_address = serializers.CharField(
+        source="order_address.__str__", read_only=True
+    )
+
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "created",
+            "user",
+            "order_address",
+            "order_items",
+            "order_phone_number",
+            "price",
+            "status",
+        )
+        read_only_fields = ("__all__",)
