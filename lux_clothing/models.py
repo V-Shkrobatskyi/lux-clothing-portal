@@ -119,21 +119,22 @@ class Product(models.Model):
     inventory = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.product_head}, {self.color}, {self.size}, {self.price}, {self.discount}"
+        return (
+            f"{self.product_head}, {self.color}, {self.size}, "
+            f"price: {self.price}, discount: {self.discount}, inventory: {self.inventory}"
+        )
 
     @staticmethod
     def validate_new_product(instance, error_to_raise) -> None:
-        if (
-            Product.objects.filter(
-                product_head=instance.product_head,
-                size=instance.size,
-                color=instance.color,
-            ).count()
-            != 0
-        ):
+        product_exist = Product.objects.get(
+            product_head=instance.product_head,
+            size=instance.size,
+            color=instance.color,
+        )
+        if product_exist and product_exist != instance:
             raise error_to_raise(
                 {
-                    "info": f"You can't add new product, it already exist with parameters: "
+                    "product": f"You can't add new product, it already exist with parameters: "
                     f"product_head = '{instance.product_head.title}', size = '{instance.size}' "
                     f"and color = '{instance.color}'."
                 }
