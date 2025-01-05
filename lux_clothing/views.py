@@ -1,5 +1,8 @@
 from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from lux_clothing.models import (
     Profile,
@@ -134,7 +137,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
-    queryset = OrderItem.objects.all()
+    queryset = OrderItem.objects.filter(active=True).select_related("user")
+    """
+    After user in Order, element of OrderItem will be seeing only for history (active=False).
+    """
     serializer_class = OrderItemSerializer
     permission_classes = (
         IsAuthenticated,
@@ -157,3 +163,14 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        instance.active = False
+        instance.save()
+
+        return Response(
+            {"detail": "Item deactivated successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )

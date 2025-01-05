@@ -14,6 +14,7 @@ def image_file_path(instance, filename):
 
 
 class Address(models.Model):
+    objects = models.Manager()
     country = models.CharField(max_length=63)
     region = models.CharField(max_length=255)
     city = models.CharField(max_length=63)
@@ -22,6 +23,7 @@ class Address(models.Model):
 
 
 class Profile(models.Model):
+    objects = models.Manager()
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -31,7 +33,6 @@ class Profile(models.Model):
     addresses = models.ManyToManyField(
         Address, related_name="profile", symmetrical=False
     )
-    default_address = models.PositiveIntegerField()  # one of profile Address id
 
     @property
     def full_name(self) -> str:
@@ -42,6 +43,7 @@ class Profile(models.Model):
 
 
 class Category(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=63, unique=True)
 
     def __str__(self):
@@ -49,6 +51,7 @@ class Category(models.Model):
 
 
 class Brand(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=63, unique=True)
 
     def __str__(self):
@@ -56,6 +59,7 @@ class Brand(models.Model):
 
 
 class ProductHead(models.Model):
+    objects = models.Manager()
     title = models.CharField(max_length=63, unique=True)
     description = models.CharField(max_length=255)
     category = models.ForeignKey(
@@ -71,12 +75,14 @@ class ProductHead(models.Model):
 
 
 class ProductPhoto(models.Model):
+    objects = models.Manager()
     image = models.ImageField(null=True, upload_to=image_file_path, blank=True)
     order = models.PositiveIntegerField(default=0)
     main = models.BooleanField(default=False)
 
 
 class Color(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=63, unique=True)
     color_hex = ColorField(default="#FF0000")
     photos = models.ManyToManyField(
@@ -88,6 +94,7 @@ class Color(models.Model):
 
 
 class Size(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=63, unique=True)
 
     def __str__(self):
@@ -95,6 +102,7 @@ class Size(models.Model):
 
 
 class Product(models.Model):
+    objects = models.Manager()
     color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="product")
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="product")
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -136,6 +144,7 @@ class Product(models.Model):
 
 
 class OrderItem(models.Model):
+    objects = models.Manager()
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_item"
     )
@@ -144,6 +153,7 @@ class OrderItem(models.Model):
     )
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"product: '{self.product}', quantity: {self.quantity}, total price: {self.quantity * self.product.price}"
@@ -163,6 +173,8 @@ class OrderItem(models.Model):
 
 
 class Order(models.Model):
+    objects = models.Manager()
+
     class StatusChoices(models.TextChoices):
         CART = "Cart"
         PENDING = "Pending"

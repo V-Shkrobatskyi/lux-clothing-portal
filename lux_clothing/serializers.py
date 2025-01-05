@@ -202,7 +202,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        fields_to_update = ["product", "quantity", "price"]
+        fields_to_update = [
+            "product",
+            "quantity",
+            "price",
+        ]
 
         for field in fields_to_update:
             value = validated_data.get(field, getattr(instance, field))
