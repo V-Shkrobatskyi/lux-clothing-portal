@@ -333,7 +333,6 @@ class OrderSerializer(serializers.ModelSerializer):
             )
 
         attrs["price"] = price
-
         attrs["status"] = Order.StatusChoices.PENDING
 
         return data
@@ -341,13 +340,11 @@ class OrderSerializer(serializers.ModelSerializer):
     @atomic
     def create(self, validated_data):
         order_items = validated_data.pop("order_items")
-
         order = Order.objects.create(**validated_data)
 
         order_items_id = []
         for order_item in order_items:
             Product.sale(order_item.product, order_item.quantity)
-
             OrderItem.deactivate(order_item)
 
             order_items_id.append(order_item.id)

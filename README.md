@@ -65,7 +65,7 @@ Users can: register, add own addresses, phone number and make orders with paymen
     ```
     python manage.py loaddata test_project_data.json
     ```
-In test data: 
+   In test data: 
 - admin account: admin@admin.com/admin.1234
 - user account: test@test.com/test.1234
 

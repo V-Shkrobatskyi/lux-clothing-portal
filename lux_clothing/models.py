@@ -184,7 +184,7 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return (
-            f"id: '{self.id}', product: '{self.product}', quantity: {self.quantity}, "
+            f"id: '{self.pk}', product: '{self.product}', quantity: {self.quantity}, "
             f"price: {self.product.price}"
         )
 
@@ -212,7 +212,6 @@ class Order(models.Model):
     objects = models.Manager()
 
     class StatusChoices(models.TextChoices):
-        CART = "Cart"
         PENDING = "Pending"
         PAID = "Paid"
         EXPIRED = "Expired"
@@ -233,11 +232,11 @@ class Order(models.Model):
     order_phone_number = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
-        max_length=15, choices=StatusChoices.choices, default=StatusChoices.CART
+        max_length=15, choices=StatusChoices.choices, default=StatusChoices.PENDING
     )
 
     class Meta:
         ordering = ["-created"]
 
     def __str__(self):
-        return f"{self.created.__format__('%Y-%m-%d %H:%M:%S')}, {self.user}, {self.status}, {self.price}"
+        return f"{self.pk}, {self.created.__format__('%Y-%m-%d %H:%M:%S')}, {self.user}, {self.status}, {self.price}"
