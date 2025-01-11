@@ -15,6 +15,7 @@ from lux_clothing.models import (
     OrderItem,
     Order,
 )
+from payment.stripe_payment import create_stripe_session
 from user.serializers import UserUpdateProfileSerializer
 
 
@@ -350,6 +351,13 @@ class OrderSerializer(serializers.ModelSerializer):
             order_items_id.append(order_item.id)
 
         order.order_items.set(order_items_id)
+
+        request = self.context.get("request")
+        create_stripe_session(
+            order,
+            request,
+            order.price,
+        )
 
         return order
 
