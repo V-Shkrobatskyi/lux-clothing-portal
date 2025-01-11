@@ -19,8 +19,8 @@ from lux_clothing.models import (
 from lux_clothing.permissions import (
     IsOwnerOrIsAdmin,
     IsAdminALLOrReadOnly,
-    IsAdminALLOrIsOnlyPostOwner,
     IsAddressOwnerOrIsAdmin,
+    IsAdminALLOrOwnerCanPostAndGet,
 )
 from lux_clothing.serializers import (
     ProfileSerializer,
@@ -202,7 +202,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = (IsAdminALLOrIsOnlyPostOwner,)
+    permission_classes = (IsAdminALLOrOwnerCanPostAndGet,)
 
     def get_queryset(self):
         queryset = self.queryset

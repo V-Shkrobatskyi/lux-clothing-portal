@@ -13,11 +13,11 @@ class IsAddressOwnerOrIsAdmin(BasePermission):
         )
 
 
-class IsAdminALLOrIsOnlyPostOwner(BasePermission):
+class IsAdminALLOrOwnerCanPostAndGet(BasePermission):
     def has_object_permission(self, request, view, obj):
         return bool(
             request.user.is_staff
-            or (obj.user == request.user and request.method == "POST")
+            or (obj.user == request.user and request.method in ["POST", "GET"])
         )
 
 
