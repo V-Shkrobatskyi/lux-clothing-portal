@@ -51,9 +51,6 @@ Users can: register, add own addresses, phone number and make orders with paymen
     
     SECRET_KEY=SECRET_KEY
     
-    CELERY_BROKER_URL=CELERY_BROKER_URL
-    CELERY_RESULT_BACKEND=CELERY_RESULT_BACKEND
-    
     STRIPE_SECRET_KEY=STRIPE_SECRET_KEY
    ```
 
