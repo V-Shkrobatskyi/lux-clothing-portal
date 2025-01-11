@@ -15,6 +15,7 @@ from lux_clothing.models import (
     OrderItem,
     Order,
 )
+from payment.models import Payment
 from payment.stripe_payment import create_stripe_session
 from user.serializers import UserUpdateProfileSerializer
 
@@ -382,3 +383,33 @@ class OrderListSerializer(serializers.ModelSerializer):
             "status",
         )
         read_only_fields = ("__all__",)
+
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.email", read_only=True)
+    order_items = OrderItemLimitedSerializer(many=True, read_only=True)
+    order_address = serializers.CharField(
+        source="order_address.__str__", read_only=True
+    )
+
+    class Meta:
+        model = Order
+        fields = "__all__"
+        read_only_fields = (
+            "order_phone_number",
+            "price",
+            "status",
+            "user",
+            "order_items",
+            "order_address",
+            "created",
+        )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        payment = Payment.objects.get(order=instance)
+
+        if payment.status != Payment.StatusChoices.PAID:
+            data["payment_url"] = payment.session_url
+
+        return data

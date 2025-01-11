@@ -37,6 +37,7 @@ from lux_clothing.serializers import (
     OrderItemListSerializer,
     OrderSerializer,
     OrderListSerializer,
+    OrderDetailSerializer,
 )
 
 
@@ -213,6 +214,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         return queryset.distinct()
 
     def get_serializer_class(self):
+        if self.action == "retrieve":
+            return OrderDetailSerializer
         if self.action == "list":
             return OrderListSerializer
         return OrderSerializer
@@ -225,3 +228,17 @@ class OrderViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        detail_serializer = OrderDetailSerializer(
+            serializer.instance, context={"request": request}
+        )
+        headers = self.get_success_headers(detail_serializer.data)
+
+        return Response(
+            detail_serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
