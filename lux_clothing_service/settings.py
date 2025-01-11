@@ -157,3 +157,5 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
 }
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
