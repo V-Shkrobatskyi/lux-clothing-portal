@@ -28,26 +28,6 @@ class Address(models.Model):
         return f"{self.zip_code}, {self.country}, {self.region}, {self.city}, {self.street}"
 
 
-class Profile(models.Model):
-    objects = models.Manager()
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="profile",
-    )
-    phone_number = models.PositiveIntegerField()
-    addresses = models.ManyToManyField(
-        Address, related_name="profile", symmetrical=False
-    )
-
-    @property
-    def full_name(self) -> str:
-        return str(self.user.full_name)
-
-    def __str__(self):
-        return self.full_name
-
-
 class Category(models.Model):
     objects = models.Manager()
     name = models.CharField(max_length=63, unique=True)
@@ -240,3 +220,26 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.pk}, {self.created.__format__('%Y-%m-%d %H:%M:%S')}, {self.user}, {self.status}, {self.price}"
+
+
+class Profile(models.Model):
+    objects = models.Manager()
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+    phone_number = models.PositiveIntegerField()
+    addresses = models.ManyToManyField(
+        Address, related_name="profile", symmetrical=False
+    )
+    favorite_products = models.ManyToManyField(
+        Product, related_name="profile", symmetrical=False, blank=True
+    )
+
+    @property
+    def full_name(self) -> str:
+        return str(self.user.full_name)
+
+    def __str__(self):
+        return self.full_name
