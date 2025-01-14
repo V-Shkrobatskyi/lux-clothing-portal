@@ -15,6 +15,7 @@ from lux_clothing.models import (
     OrderItem,
     Order,
 )
+from lux_clothing.permissions import IsAuthenticatedAndHasProfile
 from payment.models import Payment
 from payment.stripe_payment import create_stripe_session
 from user.serializers import UserUpdateProfileSerializer
@@ -195,6 +196,8 @@ class ColorSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    favorite = serializers.BooleanField(default=False)
+
     class Meta:
         model = Product
         fields = (
@@ -205,7 +208,23 @@ class ProductSerializer(serializers.ModelSerializer):
             "discount",
             "product_head",
             "inventory",
+            "favorite",
         )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+        permission = IsAuthenticatedAndHasProfile()
+
+        if permission.has_permission(request, self):
+            user = self.context["request"].user
+            favorite_exists = Profile.objects.filter(
+                user=user, favorite_products__id=data["id"]
+            ).exists()
+
+            data["favorite"] = favorite_exists
+
+        return data
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -278,7 +297,7 @@ class OrderSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
 
         user = self.context["request"].user
-        active_order_items = OrderItem.objects.filter(user=user, active=True)
+        active_order_items = OrderItem.objects.filter(user=user.pk, active=True)
 
         self.fields["order_items"] = serializers.PrimaryKeyRelatedField(
             queryset=active_order_items,
