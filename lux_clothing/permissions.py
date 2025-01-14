@@ -1,5 +1,7 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
+from lux_clothing.models import Profile
+
 
 class IsOwnerOrIsAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -24,3 +26,15 @@ class IsAdminALLOrOwnerCanPostAndGet(BasePermission):
 class IsAdminALLOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user.is_staff or request.method in SAFE_METHODS)
+
+
+class IsAdminALLOrHasProfile(BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.user.is_staff or Profile.objects.filter(user=request.user))
+
+
+class IsAuthenticatedAndHasProfile(BasePermission):
+    def has_permission(self, request, view):
+        return bool(
+            request.user.is_authenticated and Profile.objects.filter(user=request.user)
+        )
