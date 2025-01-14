@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from lux_clothing.models import Order
+from lux_clothing.permissions import IsAdminALLOrHasProfile
 from lux_clothing.serializers import OrderSerializer
 
 from payment.models import Payment
@@ -25,7 +26,10 @@ from payment.stripe_payment import create_stripe_session
 
 class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Payment.objects.select_related("order")
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (
+        IsAuthenticated,
+        IsAdminALLOrHasProfile,
+    )
 
     def get_queryset(self):
         user = self.request.user

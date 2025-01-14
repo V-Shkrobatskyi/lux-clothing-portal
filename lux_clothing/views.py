@@ -21,6 +21,8 @@ from lux_clothing.permissions import (
     IsAdminALLOrReadOnly,
     IsAddressOwnerOrIsAdmin,
     IsAdminALLOrOwnerCanPostAndGet,
+    IsAdminALLOrHasProfile,
+    IsAuthenticatedAndHasProfile,
 )
 from lux_clothing.serializers import (
     ProfileSerializer,
@@ -85,6 +87,7 @@ class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
     permission_classes = (
         IsAuthenticated,
+        IsAdminALLOrHasProfile,
         IsAddressOwnerOrIsAdmin,
     )
 
@@ -168,6 +171,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
     permission_classes = (
         IsAuthenticated,
+        IsAdminALLOrHasProfile,
         IsOwnerOrIsAdmin,
     )
 
@@ -203,7 +207,11 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = (IsAdminALLOrOwnerCanPostAndGet,)
+    permission_classes = (
+        IsAuthenticated,
+        IsAdminALLOrHasProfile,
+        IsAdminALLOrOwnerCanPostAndGet,
+    )
 
     def get_queryset(self):
         queryset = self.queryset
