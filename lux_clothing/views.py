@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -161,6 +162,38 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = (IsAdminALLOrReadOnly,)
+
+    @action(
+        methods=["GET"], detail=True, permission_classes=[IsAuthenticatedAndHasProfile]
+    )
+    def favorite(self, request, pk=None):
+        product = self.get_object()
+        profile = Profile.objects.get(user=request.user)
+
+        favorite_exists = Profile.objects.filter(
+            user=request.user, favorite_products__id=pk
+        ).exists()
+
+        if favorite_exists:
+            profile.favorite_products.remove(product)
+            profile.save()
+
+            return Response(
+                {
+                    "detail": f"Product '{product}' successfully removed from user profile '{profile}' favorite list."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        profile.favorite_products.add(product)
+        profile.save()
+
+        return Response(
+            {
+                "detail": f"Product '{product}' successfully added to user profile '{profile}' favorite list."
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
