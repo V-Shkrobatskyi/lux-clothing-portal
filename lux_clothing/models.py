@@ -229,7 +229,7 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         related_name="profile",
     )
-    phone_number = models.PositiveIntegerField()
+    phone_number = models.CharField(max_length=12, unique=True)
     addresses = models.ManyToManyField(
         Address, related_name="profile", symmetrical=False
     )
