@@ -130,11 +130,11 @@ class Product(models.Model):
 
     @staticmethod
     def validate_new_product(instance, error_to_raise) -> None:
-        product_exist = Product.objects.get(
+        product_exist = Product.objects.filter(
             product_head=instance.product_head,
             size=instance.size,
             color=instance.color,
-        )
+        ).exists()
         if product_exist and product_exist != instance:
             raise error_to_raise(
                 {
