@@ -14,6 +14,8 @@ from lux_clothing.models import (
     Product,
     OrderItem,
     Order,
+    ForWhom,
+    Style,
 )
 from lux_clothing.permissions import IsAuthenticatedAndHasProfile
 from payment.models import Payment
@@ -145,6 +147,24 @@ class CategorySerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
+        fields = (
+            "id",
+            "name",
+        )
+
+
+class ForWhomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ForWhom
+        fields = (
+            "id",
+            "name",
+        )
+
+
+class StyleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Style
         fields = (
             "id",
             "name",
