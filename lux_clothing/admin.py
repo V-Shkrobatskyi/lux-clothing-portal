@@ -9,6 +9,8 @@ from .models import (
     ProductHead,
     Category,
     Brand,
+    ForWhom,
+    Style,
     Color,
     Size,
     ProductPhoto,
@@ -22,6 +24,8 @@ admin.site.register(Product)
 admin.site.register(ProductHead)
 admin.site.register(Category)
 admin.site.register(Brand)
+admin.site.register(ForWhom)
+admin.site.register(Style)
 admin.site.register(Color)
 admin.site.register(Size)
 admin.site.register(ProductPhoto)
