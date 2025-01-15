@@ -16,6 +16,8 @@ from lux_clothing.models import (
     Product,
     OrderItem,
     Order,
+    ForWhom,
+    Style,
 )
 from lux_clothing.permissions import (
     IsOwnerOrIsAdmin,
@@ -41,6 +43,8 @@ from lux_clothing.serializers import (
     OrderSerializer,
     OrderListSerializer,
     OrderDetailSerializer,
+    ForWhomSerializer,
+    StyleSerializer,
 )
 
 
@@ -131,6 +135,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class BrandViewSet(viewsets.ModelViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class ForWhomViewSet(viewsets.ModelViewSet):
+    queryset = ForWhom.objects.all()
+    serializer_class = ForWhomSerializer
+    permission_classes = (IsAdminALLOrReadOnly,)
+
+
+class StyleViewSet(viewsets.ModelViewSet):
+    queryset = Style.objects.all()
+    serializer_class = StyleSerializer
     permission_classes = (IsAdminALLOrReadOnly,)
 
 
