@@ -179,6 +179,36 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = (IsAdminALLOrReadOnly,)
 
+    def get_queryset(self):
+        for_whom = self.request.query_params.get("for_whom")
+        category = self.request.query_params.get("category")
+        brand = self.request.query_params.get("brand")
+        style = self.request.query_params.get("style")
+        size = self.request.query_params.get("size")
+        color = self.request.query_params.get("color")
+        min_price = self.request.query_params.get("min_price")
+        max_price = self.request.query_params.get("max_price")
+        queryset = self.queryset
+
+        if for_whom:
+            queryset = queryset.filter(product_head__for_whom__name__iexact=for_whom)
+        if category:
+            queryset = queryset.filter(product_head__category__name__iexact=category)
+        if brand:
+            queryset = queryset.filter(product_head__brand__name__iexact=brand)
+        if style:
+            queryset = queryset.filter(product_head__style__name__iexact=style)
+        if size:
+            queryset = queryset.filter(size__name__iexact=size)
+        if color:
+            queryset = queryset.filter(color__name__iexact=color)
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+
+        return queryset.distinct()
+
     @action(
         methods=["GET"], detail=True, permission_classes=[IsAuthenticatedAndHasProfile]
     )
