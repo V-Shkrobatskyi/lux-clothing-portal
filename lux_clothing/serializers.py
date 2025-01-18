@@ -24,6 +24,21 @@ from user.serializers import UserUpdateProfileSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get("request")
+
+        if request:
+            user = request.user
+
+            if (
+                not user.profile.addresses.all()
+                or not Address.objects.filter(
+                    profile=user.profile, default=True
+                ).exists()
+            ):
+                self.fields["default"] = serializers.BooleanField(initial=True)
+
     class Meta:
         model = Address
         fields = (
