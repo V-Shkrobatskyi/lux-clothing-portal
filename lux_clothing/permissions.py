@@ -33,6 +33,11 @@ class IsAdminALLOrHasProfile(BasePermission):
         return bool(request.user.is_staff or Profile.objects.filter(user=request.user))
 
 
+class HasProfile(BasePermission):
+    def has_permission(self, request, view):
+        return bool(Profile.objects.filter(user=request.user))
+
+
 class IsAuthenticatedAndHasProfile(BasePermission):
     def has_permission(self, request, view):
         return bool(

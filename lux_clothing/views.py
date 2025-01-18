@@ -24,8 +24,7 @@ from lux_clothing.permissions import (
     IsAdminALLOrReadOnly,
     IsAddressOwnerOrIsAdmin,
     IsAdminALLOrOwnerCanPostAndGet,
-    IsAdminALLOrHasProfile,
-    IsAuthenticatedAndHasProfile,
+    HasProfile,
 )
 from lux_clothing.serializers import (
     ProfileSerializer,
@@ -92,7 +91,7 @@ class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
     permission_classes = (
         IsAuthenticated,
-        IsAdminALLOrHasProfile,
+        HasProfile,
         IsAddressOwnerOrIsAdmin,
     )
 
@@ -210,7 +209,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         return queryset.distinct()
 
     @action(
-        methods=["GET"], detail=True, permission_classes=[IsAuthenticatedAndHasProfile]
+        methods=["GET"], detail=True, permission_classes=[IsAuthenticated, HasProfile]
     )
     def favorite(self, request, pk=None):
         product = self.get_object()
@@ -250,7 +249,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
     permission_classes = (
         IsAuthenticated,
-        IsAdminALLOrHasProfile,
+        HasProfile,
         IsOwnerOrIsAdmin,
     )
 
@@ -269,7 +268,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(user=user)
+        serializer.save(user=user, context={"request": self.request})
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -288,7 +287,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = (
         IsAuthenticated,
-        IsAdminALLOrHasProfile,
+        HasProfile,
         IsAdminALLOrOwnerCanPostAndGet,
     )
 
