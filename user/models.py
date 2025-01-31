@@ -2,8 +2,33 @@ from django.contrib.auth.models import (
     AbstractUser,
     BaseUserManager,
 )
-from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
+
+import uuid
+from django.db import models
+
+from lux_clothing_service import settings
+
+
+class EmailConfirmation(models.Model):
+    objects = models.Manager()
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    confirmed = models.BooleanField(default=False)
+
+    def confirm(self):
+        if self.confirmed:
+            raise ValueError("Email is already confirmed")
+
+        self.confirmed = True
+        self.save()
+        self.user.email_verified = True
+        self.user.save()
+
+    def __str__(self):
+        return f"Confirmation for {self.user.email}"
 
 
 class UserManager(BaseUserManager):
@@ -43,6 +68,8 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
+    email_verified = models.BooleanField(default=False)
+    primary_email = models.BooleanField(default=True)
 
     @property
     def full_name(self) -> str:
@@ -51,3 +78,14 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     objects = UserManager()
+
+
+class PasswordResetToken(models.Model):
+    objects = models.Manager()
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        # Token validation time
+        return now() < self.created_at + settings.RESET_PASSWORD_TOKEN_VALIDATION_TIME
