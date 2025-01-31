@@ -18,8 +18,9 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        """create user with encrypted password"""
-        return get_user_model().objects.create_user(**validated_data)
+        user = get_user_model().objects.create_user(**validated_data)
+        user.save()
+        return user
 
     def update(self, instance, validated_data):
         """update user with encrypted password"""
@@ -29,6 +30,11 @@ class UserSerializer(serializers.ModelSerializer):
             user.set_password(password)
             user.save()
         return user
+
+    def validate_email(self, value):
+        if get_user_model().objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
 
 
 class UserUpdateProfileSerializer(UserSerializer):
@@ -62,12 +68,16 @@ class AuthTokenSerializer(serializers.Serializer):
                 request=self.context.get("request"), username=email, password=password
             )
 
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
             if not user:
                 msg = _("Unable to log in with provided credentials.")
                 raise serializers.ValidationError(msg, code="authorization")
+
+            if not user.email_verified:
+                raise serializers.ValidationError(
+                    _("Please confirm your email address first."),
+                    code="email_not_verified",
+                )
+
         else:
             msg = _('Must include "username" and "password".')
             raise serializers.ValidationError(msg, code="authorization")
