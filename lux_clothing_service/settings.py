@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -50,6 +51,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "payment",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    # "dj_rest_auth",
+    "dj_rest_auth.registration",
 ]
 
 MIDDLEWARE = [
@@ -60,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "lux_clothing_service.urls"
@@ -67,7 +75,7 @@ ROOT_URLCONF = "lux_clothing_service.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -159,3 +167,40 @@ REST_FRAMEWORK = {
 }
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+SITE_ID = int(os.environ["SITE_ID"])
+EMAIL_BACKEND = os.environ["EMAIL_BACKEND"]
+EMAIL_HOST = os.environ["EMAIL_HOST"]
+EMAIL_PORT = int(os.environ["EMAIL_PORT"])
+EMAIL_USE_TLS = bool(os.environ["EMAIL_USE_TLS"])
+EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # Limitation time: 3 days
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = True  # Used HMAC for confirmation
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Lux clothing portal] "  # Prefix for email subject
+
+# Message created from ACCOUNT_EMAIL_TEMPLATE_PREFIX plus:
+# "_message.html", "_message.txt", "_message_subject.txt",
+# for example email_confirmation_message.html
+ACCOUNT_EMAIL_TEMPLATE_PREFIX = "account/email/email_confirmation"
+
+RESEND_EMAIL_CONFIRMATION_THROTTLE = (
+    "1/min"  # Limitation: maximum 1 requests per minute
+)
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "user.serializers.UserSerializer",  # Used custom serializer
+}
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"  # or "https" for production
+ACCOUNT_EMAIL_CONFIRMATION_URL = "/api/user/registration/account-confirm-email/{key}/"
+ACCOUNT_ADAPTER = "user.views.CustomAccountAdapter"
+
+ACCOUNT_RATE_LIMITS = {"confirm_email": "5/m"}  # Limitation: maximum 5 email confirms
+RESET_PASSWORD_THROTTLE = "1/min"  # Limitation: maximum 1 requests per minute
+RESET_PASSWORD_TOKEN_VALIDATION_TIME = timedelta(hours=1)  # Limitation time: 1 hour
