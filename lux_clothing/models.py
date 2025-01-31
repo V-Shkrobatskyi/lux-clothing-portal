@@ -130,12 +130,16 @@ class Product(models.Model):
 
     @staticmethod
     def validate_new_product(instance, error_to_raise) -> None:
-        product_exist = Product.objects.filter(
-            product_head=instance.product_head,
-            size=instance.size,
-            color=instance.color,
-        ).exists()
-        if product_exist and product_exist != instance:
+        product_exist = (
+            Product.objects.filter(
+                product_head=instance.product_head,
+                size=instance.size,
+                color=instance.color,
+            )
+            .exclude(pk=instance.pk)
+            .first()
+        )
+        if product_exist:
             raise error_to_raise(
                 {
                     "product": f"You can't add new product, it already exist with parameters: "
@@ -165,7 +169,8 @@ class Product(models.Model):
         instance.save()
 
     def clean(self) -> None:
-        Product.validate_new_product(self, ValueError)
+        if self.pk is None:
+            Product.validate_new_product(self, ValueError)
 
     def save(self, *args, **kwargs) -> None:
         self.clean()
