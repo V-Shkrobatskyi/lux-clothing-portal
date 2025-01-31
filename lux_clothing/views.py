@@ -268,7 +268,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(user=user, context={"request": self.request})
+        serializer.save(user=user)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
