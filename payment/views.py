@@ -3,7 +3,7 @@ from django.db.transaction import atomic
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-# from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -47,17 +47,17 @@ class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
 
         return PaymentSerializer
 
-    # @extend_schema(
-    #     description="List of user's payments. Admin have access to all users payments.",
-    # )
+    @extend_schema(
+        description="List of user's payments. Admin have access to all users payments.",
+    )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    # @extend_schema(
-    #     description="Check stripe payment session status. "
-    #     "If status is ok, then update payment instance "
-    #     "and send notification message to telegram chat bot.",
-    # )
+    @extend_schema(
+        description="Check stripe payment session status. "
+        "If status is ok, then update payment instance "
+        "and send notification message to telegram chat bot.",
+    )
     @action(methods=["GET"], url_path="success", detail=False)
     def success(self, request, session_id=None):
         session_id = request.query_params.get("session_id", None)
@@ -94,21 +94,21 @@ class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # @extend_schema(
-    #     description="If user cancel payment during payment session, "
-    #     "show message about available payment session "
-    #     "for only 24h.",
-    # )
+    @extend_schema(
+        description="If user cancel payment during payment session, "
+        "show message about available payment session "
+        "for only 24h.",
+    )
     @action(methods=["GET"], url_path="cancel", detail=False)
     def cancel(self, request):
         raise ValidationError(
             "Payment can be paid a bit later, but the session is available for only 24h."
         )
 
-    # @extend_schema(
-    #     description="If the payment session is expired user can renew it. "
-    #     "System update fields in payment instance: session_id, session_url and status.",
-    # )
+    @extend_schema(
+        description="If the payment session is expired user can renew it. "
+        "System update fields in payment instance: session_id, session_url and status.",
+    )
     @action(
         detail=False,
         methods=["GET"],

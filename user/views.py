@@ -5,9 +5,9 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.db import transaction
 from django.template.loader import render_to_string
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
@@ -31,25 +31,13 @@ from django.http import JsonResponse
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):
-    def save_user(self, request, user, form, commit=True):
-        try:
-            user = super().save_user(request, user, form, commit=False)
+    """
+    Custom class for operations related to the user's account.
+    """
 
-            if not user.pk:
-                user.save()
-
-            EmailAddress.objects.get_or_create(
-                user=user,
-                email=user.email,
-                defaults={"verified": False, "primary": True},
-            )
-        except ValidationError as e:
-            raise ValidationError(f"Validation error: {str(e)}")
-        except Exception as e:
-            raise ValueError(f"Unexpected error: {str(e)}")
-
-        return user
-
+    @extend_schema(
+        description="Send customized email confirmation message to user's email.",
+    )
     def send_confirmation_mail(self, request, user, signup):
         with transaction.atomic():
             emailconfirmation = EmailConfirmation(user=user)
@@ -82,21 +70,16 @@ class CustomAccountAdapter(DefaultAccountAdapter):
             {"detail": "Email verification sent. Please confirm your email."}
         )
 
-    def respond_email_confirm(self, request, email_address):
-        if email_address.verified:
-            return JsonResponse({"detail": "Email already verified."})
-        email_address.verified = True
-        email_address.save()
-        return JsonResponse({"detail": "Email successfully verified."})
-
 
 class CustomConfirmEmailView(APIView):
     """
-    Class for confirming the user's email.
-    Supports GET to confirm the email by key,
-    and POST to resend the email confirmation.
+    Custom class for responding to link in confirmation email.
+    Supports only GET method to confirm email by key.
     """
 
+    @extend_schema(
+        description="Respond to link in confirmation email.",
+    )
     def get(self, request, key, *args, **kwargs):
         try:
             uuid_obj = uuid.UUID(key)
@@ -132,6 +115,9 @@ class ResendEmailConfirmationView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [ResendConfirmationThrottle]
 
+    @extend_schema(
+        description="Resend confirmation email.",
+    )
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         if not email:
@@ -177,6 +163,9 @@ class CreateUserView(RegisterView):
         except Exception as e:
             raise e
 
+    @extend_schema(
+        description="Add user email to EmailAddress table on user creation.",
+    )
     def perform_create(self, serializer):
         user = serializer.save()
 
@@ -207,6 +196,9 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
 
 class LogoutUserView(APIView):
+    @extend_schema(
+        description="Use GET method to log out user and delete token and auth_token from database.",
+    )
     def get(self, request):
         token = Token.objects.get(user=request.user)
         token.delete()
@@ -226,6 +218,9 @@ class RequestPasswordResetView(APIView):
 
     throttle_classes = [RequestPasswordResetThrottle]
 
+    @extend_schema(
+        description="Request a password reset email. If user with this email exists, a reset link will be sent.",
+    )
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")
         if not email:
@@ -277,6 +272,9 @@ class ResetPasswordView(APIView):
 
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        description="Reset the password using a token. If token is valid, user's password will be updated.",
+    )
     def post(self, request, token, *args, **kwargs):
         new_password = request.data.get("new_password")
         if not new_password:
