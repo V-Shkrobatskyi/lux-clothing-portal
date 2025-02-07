@@ -211,21 +211,21 @@
 },
 {
   "model": "sessions.session",
-  "pk": "ix48x5plyrzjue79i44eskuqzw5ixwjt",
+  "pk": "vfsuu4hur3isnf0keaz4eg9isfdgjlgq",
   "fields": {
-    "session_data": ".eJxVjEEOgjAQRe_StWkolenUpXvO0ExnpoIaSCisjHdXEha6_e-9_zKJtnVIW9UljWIuxpnT75aJHzrtQO403WbL87QuY7a7Yg9abT-LPq-H-3cwUB2-dRfBS2gcQCavKAHBY2BSVAL2BbmwdpCLDxFc54M00LJgxHxuKRbz_gDgoDf8:1tdwzD:1H8cZawNJfYz_-1LzLdwPJh-U7crcRJYbIkxVaJTfjA",
-    "expire_date": "2025-02-14T19:47:31.624Z"
+    "session_data": ".eJxVjEEOwiAQRe_C2pBOgdJx6d4zkBkGpGpKUtqV8e7apAvd_vfef6lA21rC1tISJlFnBer0uzHFR5p3IHeab1XHOq_LxHpX9EGbvlZJz8vh_h0UauVbRwGfPVI_gvExGe8x8dCzEcyYgbgHL66TMYIVBovO5YEQrSMA7li9P-gFN9g:1tflKv:isok6VdbU5nzrQxLsSd4DbIBU7fG2kpZrN6hPipmhO8",
+    "expire_date": "2025-02-19T19:45:25.042Z"
   }
 },
 {
   "model": "lux_clothing.address",
   "pk": 1,
   "fields": {
-    "country": "test Country",
-    "region": "test Region",
-    "city": "test City",
-    "street": "test Street",
-    "zip_code": 1234,
+    "country": "Ukraine",
+    "region": "Lvivska oblast",
+    "city": "Lviv",
+    "street": "Zelena, 1",
+    "zip_code": 79000,
     "default": true,
     "inactive": false
   }
@@ -386,7 +386,7 @@
     "category": 1,
     "brand": 1,
     "for_whom": 3,
-    "style": 10,
+    "style": 1,
     "details": "COMPOSITION, CARE & ORIGIN \r\n\r\nCOMPOSITION\r\n\r\nOUTER SHELL\r\n92% cotton\r\n8% elastane"
   }
 },
@@ -394,8 +394,8 @@
   "model": "lux_clothing.productphoto",
   "pk": 1,
   "fields": {
-    "image": "uploads/productphoto/aa121964-9a91-4dad-9e50-acef14fcedf605584441250-e1_.jpg",
-    "order": 1,
+    "image": "uploads/productphoto/8826f29b-d416-4541-83a1-925bb3069fa705584441250-e1_.jpg",
+    "order": 0,
     "main": true
   }
 },
@@ -403,8 +403,8 @@
   "model": "lux_clothing.productphoto",
   "pk": 2,
   "fields": {
-    "image": "uploads/productphoto/8865498c-dfb9-4cb8-aaee-6c3e9a42f8a105584441250-e2_.jpg",
-    "order": 0,
+    "image": "uploads/productphoto/21623beb-0cc8-466e-a94c-212769ff71a305584441250-e2_.jpg",
+    "order": 1,
     "main": false
   }
 },
@@ -412,8 +412,8 @@
   "model": "lux_clothing.productphoto",
   "pk": 3,
   "fields": {
-    "image": "uploads/productphoto/fb37dfd4-5272-4ca4-88cc-d91ade25c7a505584411922-e1_.jpg",
-    "order": 1,
+    "image": "uploads/productphoto/d1557923-398c-4a2a-9a4b-512e75e5fcc505584411922-e1_.jpg",
+    "order": 0,
     "main": true
   }
 },
@@ -421,8 +421,8 @@
   "model": "lux_clothing.productphoto",
   "pk": 4,
   "fields": {
-    "image": "uploads/productphoto/ae1dfbc9-8a51-47f6-b3c9-fe5585ebdc8f05584411922-e2_.jpg",
-    "order": 2,
+    "image": "uploads/productphoto/74ce483c-e3e1-4dcd-aa5c-99fd6f55ca5005584411922-e2_.jpg",
+    "order": 1,
     "main": false
   }
 },
@@ -430,8 +430,8 @@
   "model": "lux_clothing.productphoto",
   "pk": 5,
   "fields": {
-    "image": "uploads/productphoto/aa725a24-2006-42d7-bb89-635b96fc23cc05584441620-e1_.jpg",
-    "order": 1,
+    "image": "uploads/productphoto/01c91289-257f-4bd4-b042-3c8f4fa680a405584441620-e1_.jpg",
+    "order": 0,
     "main": true
   }
 },
@@ -439,8 +439,8 @@
   "model": "lux_clothing.productphoto",
   "pk": 6,
   "fields": {
-    "image": "uploads/productphoto/8b93b47e-7515-4352-9e94-35a04cdb912605584441620-e2_.jpg",
-    "order": 2,
+    "image": "uploads/productphoto/a9e70ac2-df60-44f4-8349-838773d0967805584441620-e2_.jpg",
+    "order": 1,
     "main": false
   }
 },
@@ -524,7 +524,7 @@
     "price": "25.00",
     "discount": "1.00",
     "product_head": 1,
-    "inventory": 18
+    "inventory": 49
   }
 },
 {
@@ -548,43 +548,31 @@
     "price": "28.00",
     "discount": "1.00",
     "product_head": 1,
-    "inventory": 50
+    "inventory": 60
   }
 },
 {
   "model": "lux_clothing.product",
   "pk": 4,
   "fields": {
-    "color": 1,
+    "color": 2,
     "size": 4,
-    "price": "25.00",
-    "discount": "1.00",
+    "price": "30.00",
+    "discount": "5.00",
     "product_head": 1,
-    "inventory": 40
+    "inventory": 68
   }
 },
 {
   "model": "lux_clothing.product",
   "pk": 5,
   "fields": {
-    "color": 2,
+    "color": 3,
     "size": 2,
-    "price": "30.00",
-    "discount": "1.00",
-    "product_head": 1,
-    "inventory": 44
-  }
-},
-{
-  "model": "lux_clothing.product",
-  "pk": 6,
-  "fields": {
-    "color": 2,
-    "size": 3,
     "price": "32.00",
     "discount": "0.00",
     "product_head": 1,
-    "inventory": 60
+    "inventory": 40
   }
 },
 {
@@ -593,9 +581,9 @@
   "fields": {
     "status": "Paid",
     "order": 1,
-    "session_url": "https://checkout.stripe.com/c/pay/cs_test_a192K612RJP7IamOb1wSxuopNpR00VJxZ8yFFWJ1As3UIckAkJDD8q9i0e#fidkdWxOYHwnPyd1blpxYHZxWjA0VDFqZnZJSnR0TnRmbW9rXWA0SVx8fXc1NXZscX1%2Fb29IM2NKRDJtTHZLMTJyQ2xCb0xqRDBATXNTV29pUkRRbWhjQWdpM2hKMlFxS01MQl01aTVEUEJNNTVzb2duU1xkYScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
-    "session_id": "cs_test_a192K612RJP7IamOb1wSxuopNpR00VJxZ8yFFWJ1As3UIckAkJDD8q9i0e",
-    "money_to_pay": "79.20"
+    "session_url": "https://checkout.stripe.com/c/pay/cs_test_a1yshydNe1M0Jm2SvKrA37YHH0zRbAYxstQndsSBZEw20UqxCzvGr45l0Z#fidkdWxOYHwnPyd1blpxYHZxWjA0VDFqZnZJSnR0TnRmbW9rXWA0SVx8fXc1NXZscX1%2Fb29IM2NKRDJtTHZLMTJyQ2xCb0xqRDBATXNTV29pUkRRbWhjQWdpM2hKMlFxS01MQl01aTVEUEJNNTVzb2duU1xkYScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+    "session_id": "cs_test_a1yshydNe1M0Jm2SvKrA37YHH0zRbAYxstQndsSBZEw20UqxCzvGr45l0Z",
+    "money_to_pay": "81.75"
   }
 },
 {
@@ -1928,14 +1916,14 @@
 {
   "model": "user.user",
   "fields": {
-    "password": "pbkdf2_sha256$870000$x4snr46mwA11ub06A8Zrgi$iWTIs+VHWGT2w02l9p2xETeGW+HYQEYgo7UTe9OSD+c=",
-    "last_login": "2025-01-31T19:47:31Z",
+    "password": "pbkdf2_sha256$870000$T7O8ItOEux08UiZTX44rX5$ZB/t8DTOQYuD+wMZtjLeftSktSyTmWUsD5a89c2nbLw=",
+    "last_login": "2025-02-05T19:45:25Z",
     "is_superuser": true,
-    "first_name": "Vitalii",
-    "last_name": "Admin",
+    "first_name": "First name",
+    "last_name": "Last name",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2025-01-31T19:47:12Z",
+    "date_joined": "2025-02-05T19:45:17Z",
     "email": "admin@admin.com",
     "email_verified": true,
     "primary_email": true,
@@ -1945,12 +1933,12 @@
 },
 {
   "model": "authtoken.token",
-  "pk": "047857abfe551f7c3ed769da8dcfcbd68f2a2f76",
+  "pk": "42248178774173887ea2a786a3b58dc3428cd50a",
   "fields": {
     "user": [
       "admin@admin.com"
     ],
-    "created": "2025-01-31T20:10:27.888Z"
+    "created": "2025-02-05T19:53:21.114Z"
   }
 },
 {
@@ -1960,7 +1948,7 @@
     "user": [
       "admin@admin.com"
     ],
-    "phone_number": "0123",
+    "phone_number": "0123456789",
     "addresses": [
       1
     ],
@@ -1971,17 +1959,17 @@
   "model": "lux_clothing.order",
   "pk": 1,
   "fields": {
-    "created": "2025-01-31T20:47:00.678Z",
+    "created": "2025-02-05T19:54:54.649Z",
     "user": [
       "admin@admin.com"
     ],
     "order_address": 1,
-    "order_phone_number": 123,
-    "price": "79.20",
+    "order_phone_number": 123456789,
+    "price": "81.75",
     "status": "Paid",
     "order_items": [
-      2,
-      3
+      1,
+      2
     ]
   }
 },
@@ -2005,22 +1993,9 @@
     "user": [
       "admin@admin.com"
     ],
-    "product": 1,
+    "product": 4,
     "quantity": 2,
-    "price": "24.75",
-    "active": false
-  }
-},
-{
-  "model": "lux_clothing.orderitem",
-  "pk": 3,
-  "fields": {
-    "user": [
-      "admin@admin.com"
-    ],
-    "product": 5,
-    "quantity": 1,
-    "price": "29.70",
+    "price": "28.50",
     "active": false
   }
 },
@@ -2028,7 +2003,7 @@
   "model": "admin.logentry",
   "pk": 1,
   "fields": {
-    "action_time": "2025-01-31T20:10:23.539Z",
+    "action_time": "2025-02-05T19:46:35.882Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2046,79 +2021,7 @@
   "model": "admin.logentry",
   "pk": 2,
   "fields": {
-    "action_time": "2025-01-31T20:13:54.606Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "brand"
-    ],
-    "object_id": "1",
-    "object_repr": "ZARA",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 3,
-  "fields": {
-    "action_time": "2025-01-31T20:14:30.417Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "brand"
-    ],
-    "object_id": "2",
-    "object_repr": "Nike",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 4,
-  "fields": {
-    "action_time": "2025-01-31T20:14:52.037Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "brand"
-    ],
-    "object_id": "3",
-    "object_repr": "Gucci",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 5,
-  "fields": {
-    "action_time": "2025-01-31T20:14:57.222Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "brand"
-    ],
-    "object_id": "4",
-    "object_repr": "Lacoste",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 6,
-  "fields": {
-    "action_time": "2025-01-31T20:15:20.979Z",
+    "action_time": "2025-02-05T19:46:59.663Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2134,9 +2037,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 7,
+  "pk": 3,
   "fields": {
-    "action_time": "2025-01-31T20:15:25.542Z",
+    "action_time": "2025-02-05T19:47:02.589Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2152,9 +2055,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 8,
+  "pk": 4,
   "fields": {
-    "action_time": "2025-01-31T20:15:30.242Z",
+    "action_time": "2025-02-05T19:47:06.176Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2170,9 +2073,81 @@
 },
 {
   "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2025-02-05T19:47:11.818Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "brand"
+    ],
+    "object_id": "1",
+    "object_repr": "ZARA",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2025-02-05T19:47:14.458Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "brand"
+    ],
+    "object_id": "2",
+    "object_repr": "Nike",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2025-02-05T19:47:17.981Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "brand"
+    ],
+    "object_id": "3",
+    "object_repr": "Gucci",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2025-02-05T19:47:21.212Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "brand"
+    ],
+    "object_id": "4",
+    "object_repr": "Lacoste",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
   "pk": 9,
   "fields": {
-    "action_time": "2025-01-31T20:15:42.496Z",
+    "action_time": "2025-02-05T19:47:25.863Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2190,7 +2165,7 @@
   "model": "admin.logentry",
   "pk": 10,
   "fields": {
-    "action_time": "2025-01-31T20:15:47.039Z",
+    "action_time": "2025-02-05T19:47:29.381Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2208,7 +2183,25 @@
   "model": "admin.logentry",
   "pk": 11,
   "fields": {
-    "action_time": "2025-01-31T20:15:59.585Z",
+    "action_time": "2025-02-05T19:47:33.194Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "forwhom"
+    ],
+    "object_id": "3",
+    "object_repr": "Men",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2025-02-05T19:47:37.092Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2224,9 +2217,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 12,
+  "pk": 13,
   "fields": {
-    "action_time": "2025-01-31T20:16:04.037Z",
+    "action_time": "2025-02-05T19:47:39.739Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2242,27 +2235,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 13,
-  "fields": {
-    "action_time": "2025-01-31T20:16:12.286Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "style"
-    ],
-    "object_id": "2",
-    "object_repr": "Business",
-    "action_flag": 2,
-    "change_message": "[]"
-  }
-},
-{
-  "model": "admin.logentry",
   "pk": 14,
   "fields": {
-    "action_time": "2025-01-31T20:16:13.995Z",
+    "action_time": "2025-02-05T19:47:43.009Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2280,7 +2255,7 @@
   "model": "admin.logentry",
   "pk": 15,
   "fields": {
-    "action_time": "2025-01-31T20:16:24.459Z",
+    "action_time": "2025-02-05T19:47:47.546Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2298,7 +2273,7 @@
   "model": "admin.logentry",
   "pk": 16,
   "fields": {
-    "action_time": "2025-01-31T20:16:28.467Z",
+    "action_time": "2025-02-05T19:47:50.186Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2316,7 +2291,7 @@
   "model": "admin.logentry",
   "pk": 17,
   "fields": {
-    "action_time": "2025-01-31T20:16:32.577Z",
+    "action_time": "2025-02-05T19:47:52.970Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2334,7 +2309,7 @@
   "model": "admin.logentry",
   "pk": 18,
   "fields": {
-    "action_time": "2025-01-31T20:16:36.238Z",
+    "action_time": "2025-02-05T19:47:55.478Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2352,7 +2327,7 @@
   "model": "admin.logentry",
   "pk": 19,
   "fields": {
-    "action_time": "2025-01-31T20:16:40.022Z",
+    "action_time": "2025-02-05T19:47:59.058Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2370,7 +2345,7 @@
   "model": "admin.logentry",
   "pk": 20,
   "fields": {
-    "action_time": "2025-01-31T20:16:44.096Z",
+    "action_time": "2025-02-05T19:48:01.656Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2388,7 +2363,7 @@
   "model": "admin.logentry",
   "pk": 21,
   "fields": {
-    "action_time": "2025-01-31T20:16:48.262Z",
+    "action_time": "2025-02-05T19:48:04.959Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2406,7 +2381,7 @@
   "model": "admin.logentry",
   "pk": 22,
   "fields": {
-    "action_time": "2025-01-31T20:16:53.295Z",
+    "action_time": "2025-02-05T19:48:09.579Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2424,79 +2399,7 @@
   "model": "admin.logentry",
   "pk": 23,
   "fields": {
-    "action_time": "2025-01-31T20:18:05.896Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "brand"
-    ],
-    "object_id": "5",
-    "object_repr": "Men",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 24,
-  "fields": {
-    "action_time": "2025-01-31T20:19:23.107Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "producthead"
-    ],
-    "object_id": "1",
-    "object_repr": "T-shirts, Men, REGULAR FIT INTERLOCK T-SHIRT",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 25,
-  "fields": {
-    "action_time": "2025-01-31T20:20:02.230Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "producthead"
-    ],
-    "object_id": "1",
-    "object_repr": "T-shirts, Men, REGULAR FIT INTERLOCK T-SHIRT",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Details\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 26,
-  "fields": {
-    "action_time": "2025-01-31T20:20:21.461Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "forwhom"
-    ],
-    "object_id": "3",
-    "object_repr": "Men",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 27,
-  "fields": {
-    "action_time": "2025-01-31T20:20:22.923Z",
+    "action_time": "2025-02-05T19:49:00.082Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2506,33 +2409,15 @@
     ],
     "object_id": "1",
     "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Brand\", \"For whom\"]}}]"
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
   }
 },
 {
   "model": "admin.logentry",
-  "pk": 28,
+  "pk": 24,
   "fields": {
-    "action_time": "2025-01-31T20:20:29.223Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "brand"
-    ],
-    "object_id": "5",
-    "object_repr": "Men",
-    "action_flag": 3,
-    "change_message": ""
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 29,
-  "fields": {
-    "action_time": "2025-01-31T20:22:28.830Z",
+    "action_time": "2025-02-05T19:49:44.078Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2548,9 +2433,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 30,
+  "pk": 25,
   "fields": {
-    "action_time": "2025-01-31T20:22:40.173Z",
+    "action_time": "2025-02-05T19:49:53.391Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2566,27 +2451,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 31,
+  "pk": 26,
   "fields": {
-    "action_time": "2025-01-31T20:22:42.203Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "color"
-    ],
-    "object_id": "1",
-    "object_repr": "White",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 32,
-  "fields": {
-    "action_time": "2025-01-31T20:23:27.306Z",
+    "action_time": "2025-02-05T19:50:02.329Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2602,9 +2469,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 33,
+  "pk": 27,
   "fields": {
-    "action_time": "2025-01-31T20:23:40.577Z",
+    "action_time": "2025-02-05T19:50:09.515Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2620,27 +2487,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 34,
+  "pk": 28,
   "fields": {
-    "action_time": "2025-01-31T20:23:42.707Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "color"
-    ],
-    "object_id": "2",
-    "object_repr": "Black",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 35,
-  "fields": {
-    "action_time": "2025-01-31T20:26:35.065Z",
+    "action_time": "2025-02-05T19:50:14.409Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2656,9 +2505,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 36,
+  "pk": 29,
   "fields": {
-    "action_time": "2025-01-31T20:26:42.718Z",
+    "action_time": "2025-02-05T19:50:19.840Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2674,9 +2523,45 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 37,
+  "pk": 30,
   "fields": {
-    "action_time": "2025-01-31T20:26:45.612Z",
+    "action_time": "2025-02-05T19:50:40.823Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "color"
+    ],
+    "object_id": "1",
+    "object_repr": "White",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2025-02-05T19:50:52.700Z",
+    "user": [
+      "admin@admin.com"
+    ],
+    "content_type": [
+      "lux_clothing",
+      "color"
+    ],
+    "object_id": "2",
+    "object_repr": "Grey",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2025-02-05T19:51:03.131Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2692,45 +2577,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 38,
+  "pk": 33,
   "fields": {
-    "action_time": "2025-01-31T20:27:32.885Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "color"
-    ],
-    "object_id": "2",
-    "object_repr": "Grey",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Name\", \"Color hex\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 39,
-  "fields": {
-    "action_time": "2025-01-31T20:27:47.468Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "color"
-    ],
-    "object_id": "3",
-    "object_repr": "Pink",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Color hex\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 40,
-  "fields": {
-    "action_time": "2025-01-31T20:27:59.072Z",
+    "action_time": "2025-02-05T19:51:12.295Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2746,9 +2595,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 41,
+  "pk": 34,
   "fields": {
-    "action_time": "2025-01-31T20:28:04.081Z",
+    "action_time": "2025-02-05T19:51:15.873Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2764,9 +2613,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 42,
+  "pk": 35,
   "fields": {
-    "action_time": "2025-01-31T20:28:08.203Z",
+    "action_time": "2025-02-05T19:51:17.998Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2782,9 +2631,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 43,
+  "pk": 36,
   "fields": {
-    "action_time": "2025-01-31T20:28:13.547Z",
+    "action_time": "2025-02-05T19:51:21.202Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2800,9 +2649,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 44,
+  "pk": 37,
   "fields": {
-    "action_time": "2025-01-31T20:28:17.438Z",
+    "action_time": "2025-02-05T19:51:25.249Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2818,9 +2667,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 45,
+  "pk": 38,
   "fields": {
-    "action_time": "2025-01-31T20:29:09.277Z",
+    "action_time": "2025-02-05T19:51:47.567Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2829,16 +2678,16 @@
       "product"
     ],
     "object_id": "1",
-    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, White, M, price: 25, discount: 1, inventory: 20",
+    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, White, M, price: 25, discount: 1, inventory: 50",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
 },
 {
   "model": "admin.logentry",
-  "pk": 46,
+  "pk": 39,
   "fields": {
-    "action_time": "2025-01-31T20:29:36.215Z",
+    "action_time": "2025-02-05T19:52:03.727Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2854,9 +2703,9 @@
 },
 {
   "model": "admin.logentry",
-  "pk": 47,
+  "pk": 40,
   "fields": {
-    "action_time": "2025-01-31T20:29:49.572Z",
+    "action_time": "2025-02-05T19:52:20.405Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2865,16 +2714,16 @@
       "product"
     ],
     "object_id": "3",
-    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, White, L, price: 28, discount: 1, inventory: 50",
+    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, White, L, price: 28, discount: 1, inventory: 60",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
 },
 {
   "model": "admin.logentry",
-  "pk": 48,
+  "pk": 41,
   "fields": {
-    "action_time": "2025-01-31T20:29:58.505Z",
+    "action_time": "2025-02-05T19:52:39.654Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2883,16 +2732,16 @@
       "product"
     ],
     "object_id": "4",
-    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, White, XL, price: 25, discount: 1, inventory: 40",
+    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, Grey, XL, price: 30, discount: 5, inventory: 70",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
 },
 {
   "model": "admin.logentry",
-  "pk": 49,
+  "pk": 42,
   "fields": {
-    "action_time": "2025-01-31T20:30:12.315Z",
+    "action_time": "2025-02-05T19:52:53.310Z",
     "user": [
       "admin@admin.com"
     ],
@@ -2901,25 +2750,7 @@
       "product"
     ],
     "object_id": "5",
-    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, Grey, M, price: 30, discount: 1, inventory: 45",
-    "action_flag": 1,
-    "change_message": "[{\"added\": {}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 50,
-  "fields": {
-    "action_time": "2025-01-31T20:30:33.041Z",
-    "user": [
-      "admin@admin.com"
-    ],
-    "content_type": [
-      "lux_clothing",
-      "product"
-    ],
-    "object_id": "6",
-    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, Grey, L, price: 32, discount: 0, inventory: 60",
+    "object_repr": "T-shirts, ZARA, REGULAR FIT INTERLOCK T-SHIRT, Pink, M, price: 32, discount: 0, inventory: 40",
     "action_flag": 1,
     "change_message": "[{\"added\": {}}]"
   }
