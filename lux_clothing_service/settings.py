@@ -55,8 +55,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    # "dj_rest_auth",
     "dj_rest_auth.registration",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -164,6 +164,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
@@ -204,3 +205,11 @@ ACCOUNT_ADAPTER = "user.views.CustomAccountAdapter"
 ACCOUNT_RATE_LIMITS = {"confirm_email": "5/m"}  # Limitation: maximum 5 email confirms
 RESET_PASSWORD_THROTTLE = "1/min"  # Limitation: maximum 1 requests per minute
 RESET_PASSWORD_TOKEN_VALIDATION_TIME = timedelta(hours=1)  # Limitation time: 1 hour
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Lux clothing portal API",
+    "DESCRIPTION": "Documentation for Lux clothing portal API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
