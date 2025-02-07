@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -78,6 +80,9 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return ProfileListSerializer
         return ProfileSerializer
 
+    @extend_schema(
+        description="Create new profile.",
+    )
     def perform_create(self, serializer):
         user = self.request.user
         user.first_name = self.request.data.get("user.first_name")
@@ -103,10 +108,17 @@ class AddressViewSet(viewsets.ModelViewSet):
 
         return queryset.distinct()
 
+    @extend_schema(
+        description="Add many addresses to profile."
+        "Mark only one with 'default' option.",
+    )
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
         serializer.save(profile=[profile])
 
+    @extend_schema(
+        description="Delete only addresses without 'default' option.",
+    )
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         used_address = Order.objects.filter(order_address=instance)
@@ -208,6 +220,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         return queryset.distinct()
 
+    @extend_schema(
+        description="Add/Remove product from favorites.",
+    )
     @action(
         methods=["GET"], detail=True, permission_classes=[IsAuthenticated, HasProfile]
     )
@@ -240,8 +255,73 @@ class ProductViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                type=OpenApiTypes.STR,
+                description="Filter by title field of 'product head' (ex. ?name=suit).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="for_whom",
+                type=OpenApiTypes.STR,
+                description="Filter by for_whom field of 'product head' (ex. ?for_whom=men).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="category",
+                type=OpenApiTypes.STR,
+                description="Filter by category field of 'product head' (ex. ?category=Hoodies).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="brand",
+                type=OpenApiTypes.STR,
+                description="Filter by brand field of 'product head' (ex. ?brand=Lacoste).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="style",
+                type=OpenApiTypes.STR,
+                description="Filter by style field of 'product head' (ex. ?style=Urban).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="size",
+                type=OpenApiTypes.STR,
+                description="Filter by product size (ex. ?size=L).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="color",
+                type=OpenApiTypes.STR,
+                description="Filter by product color (ex. ?color=black).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="min_price",
+                type=OpenApiTypes.STR,
+                description="Filter by product minimum price (ex. ?min_price=50).",
+                required=False,
+            ),
+            OpenApiParameter(
+                name="max_price",
+                type=OpenApiTypes.STR,
+                description="Filter by product maximum price (ex. ?max_price=100).",
+                required=False,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class OrderItemViewSet(viewsets.ModelViewSet):
+    """
+    After user make Order, element of OrderItem will be seeing only for Order history (active=False).
+    """
+
     queryset = OrderItem.objects.filter(active=True).select_related("user")
     """
     After user in Order, element of OrderItem will be seeing only for history (active=False).
@@ -266,10 +346,16 @@ class OrderItemViewSet(viewsets.ModelViewSet):
             return OrderItemListSerializer
         return OrderItemSerializer
 
+    @extend_schema(
+        description="Add quantity of some product to one record of OrderItem.",
+    )
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
 
+    @extend_schema(
+        description="Remove OrderItem.",
+    )
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
@@ -280,6 +366,12 @@ class OrderItemViewSet(viewsets.ModelViewSet):
             {"detail": "Item deactivated successfully."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+    @extend_schema(
+        description="List of user OrderItem, like his cart.",
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -306,6 +398,10 @@ class OrderViewSet(viewsets.ModelViewSet):
             return OrderListSerializer
         return OrderSerializer
 
+    @extend_schema(
+        description="Create an order from list of OrderItem."
+        "User can choose what OrderItems he wants in order.",
+    )
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
@@ -315,6 +411,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         context["request"] = self.request
         return context
 
+    @extend_schema(
+        description="Product price and amount will be validate and update.",
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
