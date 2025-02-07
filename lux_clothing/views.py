@@ -191,6 +191,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminALLOrReadOnly,)
 
     def get_queryset(self):
+        name = self.request.query_params.get("name")
         for_whom = self.request.query_params.get("for_whom")
         category = self.request.query_params.get("category")
         brand = self.request.query_params.get("brand")
@@ -201,6 +202,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         max_price = self.request.query_params.get("max_price")
         queryset = self.queryset
 
+        if name:
+            queryset = queryset.filter(product_head__title__icontains=name)
         if for_whom:
             queryset = queryset.filter(product_head__for_whom__name__iexact=for_whom)
         if category:
@@ -323,9 +326,6 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     """
 
     queryset = OrderItem.objects.filter(active=True).select_related("user")
-    """
-    After user in Order, element of OrderItem will be seeing only for history (active=False).
-    """
     serializer_class = OrderItemSerializer
     permission_classes = (
         IsAuthenticated,
