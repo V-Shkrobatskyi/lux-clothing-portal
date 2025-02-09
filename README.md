@@ -52,6 +52,14 @@ Users can: register, add own addresses, phone number and make orders with paymen
     SECRET_KEY=SECRET_KEY
     
     STRIPE_SECRET_KEY=STRIPE_SECRET_KEY
+   
+   SITE_ID=1
+   EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+   EMAIL_HOST='smtp.gmail.com'
+   EMAIL_PORT=587
+   EMAIL_USE_TLS=True
+   EMAIL_HOST_USER='your-email@gmail.com'
+   EMAIL_HOST_PASSWORD='your-email-password'
    ```
 
 3. Run database migrations and start server:
