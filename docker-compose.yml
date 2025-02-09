@@ -2,11 +2,12 @@ services:
   app:
     build:
       context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - ./:/lux-clothing-portal
-      - media_vol:/files/media
+      - ./backend:/lux-clothing-portal
+      - ./backend/media:/files/media
     command: >
       sh -c "python manage.py wait_for_db &&
             python manage.py migrate &&
@@ -27,4 +28,4 @@ services:
 
 volumes:
   db_vol:
-  media_vol:
+  media:

@@ -3,8 +3,9 @@ LABEL maintainer="vetali5700@gmail.com"
 
 ENV PYTHOUNNBUFFERED=1
 
-WORKDIR app/
+WORKDIR /lux-clothing-portal
 
+RUN pip install --upgrade pip
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
