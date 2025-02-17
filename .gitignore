@@ -10,3 +10,4 @@ venv/
 media
 /backend/sample/
 /frontend/
+.venv/
