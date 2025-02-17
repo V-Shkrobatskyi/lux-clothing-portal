@@ -272,9 +272,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "user",
             "product",
             "quantity",
-            "price",
+            "item_price",
         )
-        read_only_fields = ("id", "user", "price")
+        read_only_fields = ("id", "user", "item_price")
 
     def validate(self, attrs):
         data = super(OrderItemSerializer, self).validate(attrs=attrs)
@@ -285,7 +285,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields_to_update = [
             "product",
             "quantity",
-            "price",
         ]
 
         for field in fields_to_update:
@@ -308,7 +307,7 @@ class OrderItemListSerializer(serializers.ModelSerializer):
             "user",
             "product",
             "quantity",
-            "price",
+            "item_price",
         )
 
 
@@ -320,7 +319,7 @@ class OrderItemLimitedSerializer(serializers.ModelSerializer):
         fields = (
             "product",
             "quantity",
-            "price",
+            "item_price",
         )
         read_only_fields = ("__all__",)
 
@@ -379,8 +378,7 @@ class OrderSerializer(serializers.ModelSerializer):
             )
 
         for order_item in order_items:
-            OrderItem.update_price(OrderItem.objects.get(id=order_item.id))
-            price += order_item.price * order_item.quantity
+            price += order_item.item_price
 
             Product.validate_inventory(
                 order_item.product.inventory,

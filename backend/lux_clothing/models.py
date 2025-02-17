@@ -186,20 +186,22 @@ class OrderItem(models.Model):
         Product, on_delete=models.CASCADE, related_name="order_item"
     )
     quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     active = models.BooleanField(default=True)
 
     def __str__(self):
         return (
             f"id: '{self.pk}', product: '{self.product}', quantity: {self.quantity}, "
-            f"price: {self.product.price}"
+            f"price: {self.item_price}"
         )
 
-    @staticmethod
-    def update_price(instance) -> None:
-        instance.price = Decimal(
-            instance.product.price
-            - instance.product.price * Decimal(instance.product.discount / 100)
+    @property
+    def item_price(self) -> Decimal:
+        return Decimal(
+            (
+                self.product.price
+                - self.product.price * Decimal(self.product.discount / 100)
+            )
+            * self.quantity
         )
 
     @staticmethod
@@ -207,11 +209,7 @@ class OrderItem(models.Model):
         instance.active = False
         instance.save()
 
-    def clean(self) -> None:
-        OrderItem.update_price(self)
-
     def save(self, *args, **kwargs) -> None:
-        self.clean()
         return super().save(*args, **kwargs)
 
 
