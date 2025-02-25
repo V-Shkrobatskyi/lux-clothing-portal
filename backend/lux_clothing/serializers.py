@@ -17,28 +17,12 @@ from lux_clothing.models import (
     ForWhom,
     Style,
 )
-from lux_clothing.permissions import IsAuthenticatedAndHasProfile
 from payment.models import Payment
 from payment.stripe_payment import create_stripe_session
 from user.serializers import UserUpdateProfileSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get("request")
-
-        if request:
-            user = request.user
-
-            if (
-                not user.profile.addresses.all()
-                or not Address.objects.filter(
-                    profile=user.profile, default=True
-                ).exists()
-            ):
-                self.fields["default"] = serializers.BooleanField(initial=True)
-
     class Meta:
         model = Address
         fields = (
@@ -54,20 +38,32 @@ class AddressSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "profiles")
 
     def validate(self, attrs):
-        data = super(AddressSerializer, self).validate(attrs=attrs)
+        """
+        If user set default=True, then set default in all other addresses to False
+        """
+        data = super().validate(attrs)
         user = self.context["request"].user
-        default_address_exist = Address.objects.filter(
-            profile=user.profile,
-            default=True,
-        ).first()
 
-        if attrs["default"] and default_address_exist:
-            default_address_exist.default = False
-            default_address_exist.save()
+        if data.get("default", False):  # If `default=True`
+            Address.objects.filter(
+                profiles=user.profile,
+                default=True,
+            ).update(
+                default=False
+            )  # then set `default=False` to other addresses
 
         return data
 
     def update(self, instance, validated_data):
+        """Update addresses data + edit default address."""
+        if "default" in validated_data and validated_data["default"]:
+            # If user set default=True, then set default in all other addresses to False
+
+            for profile in instance.profiles.all():
+                Address.objects.filter(profiles=profile, default=True).exclude(
+                    id=instance.id
+                ).update(default=False)
+
         fields_to_update = [
             "country",
             "region",
@@ -78,12 +74,27 @@ class AddressSerializer(serializers.ModelSerializer):
         ]
 
         for field in fields_to_update:
-            value = validated_data.get(field, getattr(instance, field))
-            setattr(instance, field, value)
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
 
         instance.save()
-
         return instance
+
+
+class AddressLimitedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = (
+            "id",
+            "country",
+            "region",
+            "city",
+            "street",
+            "zip_code",
+            "default",
+            "inactive",
+        )
+        read_only_fields = ("__all__",)
 
 
 class ProfileSerializer(serializers.ModelSerializer):
