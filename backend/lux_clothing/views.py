@@ -104,7 +104,7 @@ class AddressViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
 
         if not self.request.user.is_staff:
-            queryset = queryset.filter(profile__user=self.request.user)
+            queryset = queryset.filter(profiles__user=self.request.user)
 
         return queryset.distinct()
 
@@ -114,7 +114,7 @@ class AddressViewSet(viewsets.ModelViewSet):
     )
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
-        serializer.save(profile=[profile])
+        serializer.save(profiles=[profile])
 
     @extend_schema(
         description="Delete only addresses without 'default' option.",

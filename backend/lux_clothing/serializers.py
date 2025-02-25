@@ -43,7 +43,7 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = (
             "id",
-            "profile",
+            "profiles",
             "country",
             "region",
             "city",
@@ -51,10 +51,7 @@ class AddressSerializer(serializers.ModelSerializer):
             "zip_code",
             "default",
         )
-        read_only_fields = (
-            "id",
-            "profile",
-        )
+        read_only_fields = ("id", "profiles")
 
     def validate(self, attrs):
         data = super(AddressSerializer, self).validate(attrs=attrs)

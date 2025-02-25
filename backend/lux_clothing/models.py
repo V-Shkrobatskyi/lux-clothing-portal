@@ -5,6 +5,7 @@ from decimal import Decimal
 from colorfield.fields import ColorField
 from django.conf import settings
 from django.db import models
+from django.utils.functional import cached_property
 
 
 def image_file_path(instance, filename):
@@ -65,21 +66,25 @@ class ProductHead(models.Model):
     title = models.CharField(max_length=63, unique=True)
     description = models.CharField(max_length=255)
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name="product_head"
+        Category, on_delete=models.CASCADE, related_name="product_heads"
     )
     brand = models.ForeignKey(
-        Brand, on_delete=models.CASCADE, related_name="product_head"
+        Brand, on_delete=models.CASCADE, related_name="product_heads"
     )
     for_whom = models.ForeignKey(
-        ForWhom, on_delete=models.CASCADE, related_name="product_head"
+        ForWhom, on_delete=models.CASCADE, related_name="product_heads"
     )
     style = models.ForeignKey(
-        Style, on_delete=models.CASCADE, related_name="product_head"
+        Style, on_delete=models.CASCADE, related_name="product_heads"
     )
     details = models.TextField()
 
-    def __str__(self):
+    @cached_property
+    def cached_str(self):
         return f"{self.category}, {self.brand}, {self.title}"
+
+    def __str__(self):
+        return self.cached_str
 
 
 class ProductPhoto(models.Model):
@@ -111,22 +116,26 @@ class Size(models.Model):
 
 class Product(models.Model):
     objects = models.Manager()
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="product")
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="product")
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="products")
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="products")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True
     )
     product_head = models.ForeignKey(
-        ProductHead, on_delete=models.CASCADE, related_name="product"
+        ProductHead, on_delete=models.CASCADE, related_name="products"
     )
     inventory = models.PositiveIntegerField(default=0)
 
-    def __str__(self):
+    @cached_property
+    def cached_str(self):
         return (
             f"{self.product_head}, {self.color}, {self.size}, "
             f"price: {self.price}, discount: {self.discount}, inventory: {self.inventory}"
         )
+
+    def __str__(self):
+        return self.cached_str
 
     @staticmethod
     def validate_new_product(instance, error_to_raise) -> None:
@@ -180,19 +189,24 @@ class Product(models.Model):
 class OrderItem(models.Model):
     objects = models.Manager()
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_item"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_items"
     )
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="order_item"
+        Product, on_delete=models.CASCADE, related_name="order_items"
     )
     quantity = models.PositiveIntegerField()
     active = models.BooleanField(default=True)
 
-    def __str__(self):
+    @cached_property
+    def cached_str(self):
         return (
-            f"id: '{self.pk}', product: '{self.product}', quantity: {self.quantity}, "
-            f"price: {self.item_price}"
+            f"id: {self.pk}, product: {self.product.product_head.title}, brand: {self.product.product_head.brand}, "
+            f"color: {self.product.color}, size: {self.product.size}, "
+            f"quantity: {self.quantity}, price: {self.item_price}"
         )
+
+    def __str__(self):
+        return self.cached_str
 
     @property
     def item_price(self) -> Decimal:
@@ -226,13 +240,13 @@ class Order(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="order"
+        settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="orders"
     )
     order_address = models.ForeignKey(
-        Address, on_delete=models.DO_NOTHING, related_name="order"
+        Address, on_delete=models.DO_NOTHING, related_name="orders"
     )
     order_items = models.ManyToManyField(
-        OrderItem, related_name="order", symmetrical=False
+        OrderItem, related_name="orders", symmetrical=False
     )
     order_phone_number = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -256,10 +270,10 @@ class Profile(models.Model):
     )
     phone_number = models.CharField(max_length=12, unique=True)
     addresses = models.ManyToManyField(
-        Address, related_name="profile", symmetrical=False
+        Address, related_name="profiles", symmetrical=False
     )
     favorite_products = models.ManyToManyField(
-        Product, related_name="profile", symmetrical=False, blank=True
+        Product, related_name="profiles", symmetrical=False, blank=True
     )
 
     @property
