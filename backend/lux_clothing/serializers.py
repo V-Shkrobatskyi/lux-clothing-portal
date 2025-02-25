@@ -304,6 +304,7 @@ class AddToCartSerializer(serializers.Serializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source="user.email", read_only=True)
+    product = serializers.CharField(source="product.__str__", read_only=True)
 
     class Meta:
         model = OrderItem
@@ -314,7 +315,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             "quantity",
             "item_price",
         )
-        read_only_fields = ("id", "user", "item_price")
+        read_only_fields = ("id", "user", "product", "item_price")
 
     def validate(self, attrs):
         data = super(OrderItemSerializer, self).validate(attrs=attrs)
@@ -323,7 +324,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         fields_to_update = [
-            "product",
             "quantity",
         ]
 
@@ -371,14 +371,17 @@ class OrderSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
 
         user = self.context["request"].user
-        active_order_items = OrderItem.objects.filter(user=user.pk, active=True)
 
+        active_order_items = self.context.get("active_order_items")
+        if active_order_items is None:
+            active_order_items = OrderItem.objects.filter(user=user.pk, active=True)
         self.fields["order_items"] = serializers.PrimaryKeyRelatedField(
             queryset=active_order_items,
             many=True,
         )
+
         self.fields["order_address"].queryset = Address.objects.filter(
-            profile=user.profile, inactive=False
+            profiles=user.profile, inactive=False
         ).order_by("-default")
 
     class Meta:

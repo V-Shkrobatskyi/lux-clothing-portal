@@ -417,7 +417,14 @@ class ProductViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data)
 
-class OrderItemViewSet(viewsets.ModelViewSet):
+
+class OrderItemViewSet(
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     """
     After user make Order, element of OrderItem will be seeing only for Order history (active=False).
     """
@@ -455,13 +462,6 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return OrderItemListSerializer
         return OrderItemSerializer
-
-    @extend_schema(
-        description="Add quantity of some product to one record of OrderItem.",
-    )
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
 
     @extend_schema(
         description="Remove OrderItem.",
@@ -540,11 +540,6 @@ class OrderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["request"] = self.request
-        return context
 
     @extend_schema(
         description="Product price and amount will be validate and update.",
