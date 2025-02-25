@@ -99,18 +99,21 @@ class AddressLimitedSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserUpdateProfileSerializer(many=False, partial=True)
-    addresses = AddressSerializer(many=True, read_only=True)
+    email = serializers.CharField(source="user.email", read_only=True)
+    addresses = AddressLimitedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile
         fields = [
             "id",
+            "email",
             "user",
             "phone_number",
             "addresses",
         ]
         read_only_fields = (
             "id",
+            "email",
             "user",
             "addresses",
         )
@@ -144,18 +147,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         user.save()
 
         return instance
-
-
-class ProfileListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = (
-            "id",
-            "user",
-            "full_name",
-            "phone_number",
-            "addresses",
-        )
 
 
 class CategorySerializer(serializers.ModelSerializer):

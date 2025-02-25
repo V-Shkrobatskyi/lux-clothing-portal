@@ -1,6 +1,7 @@
+from django.db.models import Exists, OuterRef
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -30,7 +31,6 @@ from lux_clothing.permissions import (
 )
 from lux_clothing.serializers import (
     ProfileSerializer,
-    ProfileListSerializer,
     AddressSerializer,
     CategorySerializer,
     BrandSerializer,
@@ -62,11 +62,14 @@ class ProfileViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
+        email = self.request.query_params.get("email")
         first_name = self.request.query_params.get("first_name")
         last_name = self.request.query_params.get("last_name")
         phone_number = self.request.query_params.get("phone_number")
         queryset = self.queryset
 
+        if email:
+            queryset = queryset.filter(user__email__icontains=email)
         if first_name:
             queryset = queryset.filter(user__first_name__icontains=first_name)
         if last_name:
@@ -78,11 +81,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user=self.request.user)
 
         return queryset.distinct()
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return ProfileListSerializer
-        return ProfileSerializer
 
     @extend_schema(
         description="Create new profile.",
