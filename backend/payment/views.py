@@ -25,7 +25,7 @@ from payment.stripe_payment import create_stripe_session
 
 
 class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Payment.objects.select_related("order")
+    queryset = Payment.objects.select_related("order", "order__user")
     permission_classes = (
         IsAuthenticated,
         IsAdminALLOrHasProfile,

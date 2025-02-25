@@ -50,7 +50,11 @@ from lux_clothing.serializers import (
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all().select_related("user")
+    queryset = (
+        Profile.objects.all()
+        .select_related("user")
+        .prefetch_related("addresses", "addresses__profiles")
+    )
     serializer_class = ProfileSerializer
     permission_classes = (
         IsAuthenticated,
@@ -92,7 +96,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 class AddressViewSet(viewsets.ModelViewSet):
-    queryset = Address.objects.filter(inactive=False)
+    queryset = Address.objects.filter(inactive=False).prefetch_related("profiles")
     serializer_class = AddressSerializer
     permission_classes = (
         IsAuthenticated,
@@ -186,8 +190,15 @@ class ColorViewSet(viewsets.ModelViewSet):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    queryset = Product.objects.all().select_related(
+        "product_head",
+        "product_head__category",
+        "product_head__brand",
+        "product_head__for_whom",
+        "product_head__style",
+        "color",
+        "size",
+    )
     permission_classes = (IsAdminALLOrReadOnly,)
 
     def get_queryset(self):
@@ -317,7 +328,13 @@ class ProductViewSet(viewsets.ModelViewSet):
         ]
     )
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        queryset = self.filter_queryset(self.get_queryset())
+
+        favorite_ids = []
+        if request.user.is_authenticated:
+            favorite_ids = list(
+                request.user.profile.favorite_products.values_list("id", flat=True)
+            )
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -325,7 +342,20 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     After user make Order, element of OrderItem will be seeing only for Order history (active=False).
     """
 
-    queryset = OrderItem.objects.filter(active=True).select_related("user")
+    queryset = (
+        OrderItem.objects.filter(active=True)
+        .select_related(
+            "user",
+            "product",
+            "product__product_head",
+            "product__product_head__category",
+            "product__product_head__brand",
+            "product__product_head__for_whom",
+            "product__product_head__style",
+        )
+        .prefetch_related("product__color", "product__size")
+    )
+
     serializer_class = OrderItemSerializer
     permission_classes = (
         IsAuthenticated,
@@ -375,7 +405,17 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all().select_related("user")
+    queryset = (
+        Order.objects.all()
+        .select_related("user__profile", "order_address")
+        .prefetch_related(
+            "order_items",
+            "order_items__product",
+            "order_items__product__product_head",
+            "order_items__product__color",
+            "order_items__product__size",
+        )
+    )
     serializer_class = OrderSerializer
     permission_classes = (
         IsAuthenticated,
@@ -390,6 +430,21 @@ class OrderViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user=self.request.user)
 
         return queryset.distinct()
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        context["active_order_items"] = OrderItem.objects.filter(
+            user=self.request.user.pk, active=True
+        ).select_related(
+            "product",
+            "product__color",
+            "product__size",
+            "product__product_head",
+            "product__product_head__brand",
+        )
+
+        return context
 
     def get_serializer_class(self):
         if self.action == "retrieve":
