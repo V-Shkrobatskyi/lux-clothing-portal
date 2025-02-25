@@ -229,8 +229,41 @@ class ColorSerializer(serializers.ModelSerializer):
         )
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    favorite = serializers.BooleanField(default=False)
+class ProductHeadDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductHead
+        fields = "__all__"
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    favorite = serializers.SerializerMethodField()
+    product_head_detail = ProductHeadDetailSerializer(
+        source="product_head", read_only=True
+    )
+
+    class Meta:
+        model = Product
+        fields = (
+            "id",
+            "color",
+            "size",
+            "price",
+            "discount",
+            "product_head_detail",
+            "inventory",
+            "favorite",
+        )
+
+    def get_favorite(self, obj):
+        favorite_ids = self.context.get("favorite_ids", [])
+        return obj.id in favorite_ids
+
+
+class ProductWriteSerializer(serializers.ModelSerializer):
+    product_head = serializers.SlugRelatedField(
+        slug_field="title",
+        queryset=ProductHead.objects.all().select_related("category", "brand"),
+    )
 
     class Meta:
         model = Product
@@ -242,23 +275,31 @@ class ProductSerializer(serializers.ModelSerializer):
             "discount",
             "product_head",
             "inventory",
+        )
+
+
+class ProductDetailSerializer(serializers.ModelSerializer):
+    favorite = serializers.BooleanField(source="is_favorite", read_only=True)
+    product_head_detail = ProductHeadDetailSerializer(
+        source="product_head", read_only=True
+    )
+
+    class Meta:
+        model = Product
+        fields = (
+            "id",
+            "color",
+            "size",
+            "price",
+            "discount",
+            "product_head_detail",
+            "inventory",
             "favorite",
         )
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        request = self.context.get("request")
-        permission = IsAuthenticatedAndHasProfile()
 
-        if permission.has_permission(request, self):
-            user = self.context["request"].user
-            favorite_exists = Profile.objects.filter(
-                user=user, favorite_products__id=data["id"]
-            ).exists()
-
-            data["favorite"] = favorite_exists
-
-        return data
+class AddToCartSerializer(serializers.Serializer):
+    quantity = serializers.IntegerField(min_value=1, default=1)
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

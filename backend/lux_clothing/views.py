@@ -38,7 +38,6 @@ from lux_clothing.serializers import (
     ProductHeadSerializer,
     ColorSerializer,
     ProductPhotoSerializer,
-    ProductSerializer,
     OrderItemSerializer,
     OrderItemListSerializer,
     OrderSerializer,
@@ -46,6 +45,10 @@ from lux_clothing.serializers import (
     OrderDetailSerializer,
     ForWhomSerializer,
     StyleSerializer,
+    AddToCartSerializer,
+    ProductWriteSerializer,
+    ProductDetailSerializer,
+    ProductListSerializer,
 )
 
 
@@ -199,6 +202,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     )
     permission_classes = (IsAdminALLOrReadOnly,)
 
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return ProductDetailSerializer
+        elif self.action in ["list", "favorites"]:
+            return ProductListSerializer
+        elif self.action == "add_to_cart":
+            return AddToCartSerializer
+        return ProductWriteSerializer
+
     def get_queryset(self):
         name = self.request.query_params.get("name")
         for_whom = self.request.query_params.get("for_whom")
@@ -229,6 +241,15 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(price__gte=min_price)
         if max_price:
             queryset = queryset.filter(price__lte=max_price)
+
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(
+                is_favorite=Exists(
+                    self.request.user.profile.favorite_products.filter(
+                        pk=OuterRef("pk")
+                    )
+                )
+            )
 
         return queryset.distinct()
 
@@ -263,6 +284,61 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(
             {
                 "detail": f"Product '{product}' successfully added to user profile '{profile}' favorite list."
+            },
+            status=status.HTTP_200_OK,
+        )
+
+    @action(
+        methods=["GET"], detail=False, permission_classes=[IsAuthenticated, HasProfile]
+    )
+    def favorites(self, request):
+        profile = request.user.profile
+        favorite_products = profile.favorite_products.all().select_related(
+            "product_head",
+            "product_head__category",
+            "product_head__brand",
+            "product_head__for_whom",
+            "product_head__style",
+            "color",
+            "size",
+        )
+        favorite_ids = list(favorite_products.values_list("id", flat=True))
+        serializer = self.get_serializer(
+            favorite_products,
+            many=True,
+            context={"request": request, "favorite_ids": favorite_ids},
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        permission_classes=[IsAuthenticated, HasProfile],
+        serializer_class=AddToCartSerializer,
+    )
+    def add_to_cart(self, request, pk=None):
+        product = self.get_object()
+        user = request.user
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        quantity = serializer.validated_data["quantity"]
+
+        order_item, created = OrderItem.objects.get_or_create(
+            user=user,
+            product=product,
+            active=True,
+            defaults={"quantity": quantity},
+        )
+
+        if not created:
+            order_item.quantity += quantity
+            order_item.save()
+
+        return Response(
+            {
+                "detail": f"Added product '{product}' with quantity {quantity} to cart.",
+                "order_item": OrderItemSerializer(order_item).data,
             },
             status=status.HTTP_200_OK,
         )
@@ -334,6 +410,12 @@ class ProductViewSet(viewsets.ModelViewSet):
                 request.user.profile.favorite_products.values_list("id", flat=True)
             )
 
+        serializer = self.get_serializer(
+            queryset,
+            many=True,
+            context={"request": request, "favorite_ids": favorite_ids},
+        )
+        return Response(serializer.data)
 
 class OrderItemViewSet(viewsets.ModelViewSet):
     """
